@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import {
   FaBars,
   FaUser,
@@ -7,6 +7,14 @@ import {
   FaUserCircle,
   FaUserFriends,
 } from "react-icons/fa";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Link, NavLink } from "react-router-dom";
 import { FaShoppingBasket } from "react-icons/fa";
 import { BiUser } from "react-icons/bi";
@@ -21,8 +29,33 @@ import {
   NavigationMenuTrigger,
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
+import { UserContext } from "@/context/userContext";
+import "./index.scss";
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
+  const { user, setUser, role, setRole, setToken } = useContext(UserContext);
+  const removeStorage = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("username");
+    setToken(null);
+    setRole(null);
+    setUser(null);
+    setBasket(null);
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+    console.log("salam");
+  };
+
+  const { t, i18n } = useTranslation();
+  function changeLang(lang) {
+    i18n.changeLanguage(lang);
+  }
   return (
     <>
       <nav className=" bg-white ">
@@ -40,22 +73,27 @@ const Navbar = () => {
             <NavigationMenu className="py-2 hidden lg:flex">
               <NavigationMenuList className="flex gap-7">
                 <NavigationMenuItem>
-                  <Link to={"/"} legacyBehavior passHref>
+                  <NavLink
+                    activeclassname={"active"}
+                    to={"/"}
+                    legacyBehavior
+                    passHref
+                  >
                     <NavigationMenuLink className="text-black font-bold">
-                      Home
+                      {t("Home")}
                     </NavigationMenuLink>
-                  </Link>
+                  </NavLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link to={"/about"} legacyBehavior passHref>
+                  <NavLink to={"/about"} legacyBehavior passHref>
                     <NavigationMenuLink className="text-black  font-bold">
-                      About
+                      {t("About")}
                     </NavigationMenuLink>
-                  </Link>
+                  </NavLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem className="text-black font-bold">
                   <NavigationMenuTrigger className="font-bold">
-                    Listing
+                    {t("Listing")}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className=" ">
                     <ul className="grid   gap-3    p-6 md:w-[100px] lg:w-[200px] ">
@@ -67,7 +105,7 @@ const Navbar = () => {
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className=" font-bold">
-                    Tour
+                    {t("Tour")}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="  ">
                     <ul className="grid   gap-3    p-6 md:w-[100px] lg:w-[200px] ">
@@ -81,7 +119,7 @@ const Navbar = () => {
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className=" font-bold">
-                    Pages
+                    {t("Pages")}
                   </NavigationMenuTrigger>
                   <NavigationMenuContent className="  ">
                     <ul className="grid   gap-3    p-6 md:w-[100px] lg:w-[200px] ">
@@ -95,22 +133,29 @@ const Navbar = () => {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <Link to={"/contact"} legacyBehavior passHref>
+                  <NavLink to={"/contact"} legacyBehavior passHref>
                     <NavigationMenuLink className="text-black font-bold">
-                      Contact
+                      {t("Contact")}
                     </NavigationMenuLink>
-                  </Link>
+                  </NavLink>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
             <div className="hidden lg:flex justify-between  items-center gap-3 flex-wrap">
-              <div>
-                <span className="flex items-center gap-1 font-semibold">
-                  EN
-                  <span className="text-gray-600 text-sm">
-                    <IoIosArrowDown />
-                  </span>
-                </span>
+              <div className="relative cursor-pointer">
+                <p
+                  className="flex items-center text-right"
+                  onClick={handleClick}
+                >
+                  EN <IoIosArrowDown />
+                </p>
+
+                <div className={`changeLang   ${isOpen ? "isOpen" : ""}   `}>
+                  <ul className=" text-white z-[9999999999999999]">
+                    <li onClick={() => changeLang("en")}>EN</li>
+                    <li onClick={() => changeLang("az")}>AZ</li>
+                  </ul>
+                </div>
               </div>
               <div className="w-10 h-10  relative text-lg rounded-full  shadow-md border flex  justify-center items-center">
                 <span className=" relative">
@@ -122,11 +167,93 @@ const Navbar = () => {
                   1
                 </span>
               </div>
-              <div className="w-10 h-10  relative text-lg rounded-full  shadow-md border flex  justify-center items-center">
-                <span className=" relative">
-                  <BiUser />
-                </span>
-              </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <div className="  w-10 h-10  relative text-lg rounded-full  shadow-md border flex  justify-center items-center">
+                    <span className=" relative">
+                      <BiUser />
+                    </span>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>
+                    {role ? (
+                      <>
+                        <span>Hi, {user}</span>
+                      </>
+                    ) : (
+                      <>BookingWeb</>
+                    )}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    {role === "admin" || role === "superAdmin" ? (
+                      <NavLink to={"/admin"} className=" w-full">
+                        Dashboard
+                      </NavLink>
+                    ) : (
+                      <>
+                        <p>
+                          <NavLink to={"/login"}>Login</NavLink>
+                        </p>
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    {role ? (
+                      <>
+                        <p>
+                          <NavLink to={"/profile"}>Profile</NavLink>
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        {" "}
+                        <NavLink to={"/register"}>Register</NavLink>
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    {role ? (
+                      <>
+                        <p>
+                          <NavLink to={"/wishlist"}>Wishlist</NavLink>
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <NavLink to={"/about"}>About</NavLink>
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    {role ? (
+                      <>
+                        <button onClick={() => removeStorage()}>Log out</button>
+                      </>
+                    ) : (
+                      <>
+                        <NavLink to={"/faq"}>FAQ</NavLink>
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              {/* {role ? (
+                <>
+                  
+                  <button onClick={() => removeStorage()}>Log out</button>
+                 
+                </>
+              ) : (
+                <>
+                  <p>
+                    <NavLink to={"/wishlist"}>Wishlist</NavLink>
+                  </p>
+                 
+                </>
+              )} */}
 
               {/* <div>
                 <button className="py-2 px-2 bg-white  hover:bg-black duration-300  hover:text-white rounded-md ">

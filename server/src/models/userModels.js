@@ -50,6 +50,14 @@ const UserSchema = new Schema(
         hotel: { type: Schema.Types.ObjectId, ref: "Hotels" },
       },  
     ],
+    unavailableDates: [],
+    bookings: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Bookings",
+      },
+    ],
+    
   },
   { timestamps: true }
 );

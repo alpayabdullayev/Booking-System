@@ -1,4 +1,5 @@
 import Hotel from "../models/hotelModels.js";
+import Room from "../models/roomModels.js";
 import HotelType from "../models/hotelTypeModels.js";
 import cloudinary from "cloudinary";
 
@@ -88,7 +89,7 @@ export const deleteHotel = async (req, res, next) => {
 export const getHotelById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const hotel = await Hotel.findById(id).populate("type");
+    const hotel = await Hotel.findById(id).populate("type").populate("rooms")
     res.status(200).json(hotel);
   } catch (err) {
     next(err);
@@ -97,7 +98,7 @@ export const getHotelById = async (req, res, next) => {
 
 export const getAllHotels = async (req, res, next) => {
   try {
-    const hotels = await Hotel.find({}).populate("type");
+    const hotels = await Hotel.find({}).populate("type").populate("rooms")
     res.status(200).json(hotels);
   } catch (err) {
     next(err);
@@ -196,6 +197,20 @@ export const countByCity = async (req, res, next) => {
 //     res.status(500).json({ error: 'Internal Server Error' });
 //   }
 // };
+
+export const getHotelRooms = async (req, res, next) => {
+  try {
+    const hotel = await Hotel.findById(req.params.id);
+    const list = await Promise.all(
+      hotel.rooms.map((room) => {
+        return Room.findById(room);
+      })
+    );
+    res.status(200).json(list)
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const getHotelsByType = async (req, res) => {
   const { typeId } = req.params;

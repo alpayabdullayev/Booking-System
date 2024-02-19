@@ -9,6 +9,8 @@ import { HotelRouter } from "./src/routes/hotelsRoutes.js";
 import { UserRouter } from "./src/routes/userRouter.js";
 import { RoomRouter } from "./src/routes/roomsRoutes.js";
 import { HotelTypeRouter } from "./src/routes/hotelTypeRoutes.js";
+import { DestinationSliderRouter } from "./src/routes/destinationSliderRoutes.js";
+import { BookingRouter } from "./src/routes/bookingRoutes.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -36,6 +38,8 @@ app.use("/api", UserRouter);
 app.use("/api", HotelRouter);
 app.use("/api", HotelTypeRouter);
 app.use("/api", RoomRouter);
+app.use("/api", DestinationSliderRouter);
+app.use("/api", BookingRouter);
 
 console.log("Cloudinary Config:", cloudinary.config());
 console.log("Cloudinary API Key:", process.env.CLOUDINARY_API_KEY);

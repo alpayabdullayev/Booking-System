@@ -58,7 +58,7 @@ const SearchComponents = () => {
         />
       </div>
 
-      <div className="relative z-40 flex flex-wrap">
+      {/* <div className="relative z-40 flex flex-wrap">
         <span className="text-gray-600 px-2 bg-white  absolute top-1 left-0   z-10">
           <FaCalendar />
         </span>
@@ -85,8 +85,8 @@ const SearchComponents = () => {
             </span>
           )}
         </div>
-      </div>
-      <div className="relative  w-52 flex flex-wrap flex-col">
+      </div> */}
+      {/* <div className="relative  w-52 flex flex-wrap flex-col">
         <span
           onClick={() => setOpenOptions(!openOptions)}
           className=" bg-white cursor-pointer p-[8px] rounded-sm"
@@ -135,7 +135,7 @@ const SearchComponents = () => {
             </div>
           )}
         </span>
-      </div>
+      </div> */}
       <div className="">
         <button
           className="py-2 px-4 bg-blue-500  hover:bg-black duration-300       rounded-md text-white"

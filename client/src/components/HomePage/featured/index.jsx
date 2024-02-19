@@ -1,3 +1,4 @@
+import MainCardSkeleton from "@/components/common/mainCardSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -35,54 +36,10 @@ const Featured = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 ">
               {IsLoading ? (
                 <>
-                  <div className="flex flex-col gap-4 ">
-                    <Skeleton className="h-52  w-full rounded-xl" />
-                    <div className="p-4 flex flex-col gap-3">
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                      <div className="flex  justify-between items-center">
-                        <Skeleton className="h-4 w-1/4" />
-                        <Skeleton className="h-4 w-1/4" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-4  ">
-                    <Skeleton className="h-52 w-full rounded-xl" />
-                    <div className="p-4 flex flex-col gap-3">
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                      <div className="flex  justify-between items-center">
-                        <Skeleton className="h-4 w-1/4" />
-                        <Skeleton className="h-4 w-1/4" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-4 ">
-                    <Skeleton className="h-52 w-full rounded-xl" />
-                    <div className="p-4 flex flex-col gap-3 ">
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                      <div className="flex  justify-between items-center">
-                        <Skeleton className="h-4 w-1/4" />
-                        <Skeleton className="h-4 w-1/4" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-4 ">
-                    <Skeleton className="h-52 w-full rounded-xl" />
-                    <div className="p-4 flex flex-col gap-3">
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                      <div className="flex  justify-between items-center">
-                        <Skeleton className="h-4 w-1/4" />
-                        <Skeleton className="h-4 w-1/4" />
-                      </div>
-                    </div>
-                  </div>
+                  <MainCardSkeleton />
+                  <MainCardSkeleton />
+                  <MainCardSkeleton />
+                  <MainCardSkeleton />
                 </>
               ) : (
                 data &&
@@ -98,9 +55,11 @@ const Featured = () => {
                       </Link>
 
                       <div className=" absolute top-2 left-2">
-                        <p className=" p-1 bg-red-600 text-white font-bold rounded-md">
-                          Featured
-                        </p>
+                        {item.featured === true ? (
+                          <p className=" p-1 bg-red-600 text-white font-bold rounded-md">
+                            Featured
+                          </p>
+                        ) : null}
                       </div>
                     </div>
                     <div className="p-4 flex flex-col gap-3">

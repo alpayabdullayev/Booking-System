@@ -51,20 +51,56 @@ export const deleteUser = async (req,res,next)=>{
     next(err);
   }
 }
-export const getUserById = async (req,res,next)=>{
+export const getUserById = async (req, res) => {
   try {
-    const {id} = req.params
-    const user = await User.findById(id);
+    const { id } = req.params;
+    const user = await User.findById(id).populate('wishlist.hotel');
+    if (!user) {
+      return res.status(404).json({ message: 'Not Found' });
+    }
     res.status(200).json(user);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error' });
   }
-}
+};
 export const getAllUsers = async (req,res,next)=>{
   try {
-    const users = await User.find();
+    const users = await User.find().populate("wishlist.hotel")
     res.status(200).json(users);
   } catch (err) {
     next(err);
   }
 }
+
+export const addToWishlist = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { hotelId } = req.body;
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User Not Found" });
+    }
+
+    const hotelExistInWishlist = user.wishlist.find(
+      (x) => x.hotel && x.hotel._id.toString() === hotelId
+    );
+
+    if (hotelExistInWishlist) {
+      user.wishlist = user.wishlist.filter(
+        (x) => x.hotel && x.hotel._id.toString() !== hotelId
+      );
+    } else {
+      user.wishlist.push({ hotel: hotelId });
+    }
+
+    await user.save();
+    const data = await user.populate("wishlist.hotel");
+    res.status(201).json({
+      message: "Wishlist updated",
+      user: data,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

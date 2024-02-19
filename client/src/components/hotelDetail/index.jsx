@@ -1,16 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-// // Import Swiper React components
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import "./index.css";
+import { useNavigate, useParams } from "react-router-dom";
 
-// // Import Swiper styles
-// import "swiper/css";
-// import "swiper/css/pagination";
-
-// // import required modules
-// import { Autoplay, Pagination } from "swiper/modules";
-import { FaStar } from "react-icons/fa";
+import { FaBed, FaStar } from "react-icons/fa";
 import { CiHeart, CiLocationOn, CiPlay1, CiShare2 } from "react-icons/ci";
 import { IoFootstepsOutline } from "react-icons/io5";
 import { MdLocationCity, MdOutlineGTranslate } from "react-icons/md";
@@ -18,33 +9,36 @@ import { VscVerifiedFilled } from "react-icons/vsc";
 import { TbTag } from "react-icons/tb";
 import Featured from "../HomePage/featured";
 import { RiPinDistanceLine } from "react-icons/ri";
+import { useForm } from "react-hook-form";
+import "./index.scss";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import "./index.scss";
+import { differenceInDays } from "date-fns";
+
 import axios from "axios";
 import { SearchContext } from "@/context/SearchContext";
 import SearchComponents from "../common/Search";
 import HotelDetailSlider from "./hotelDetailSlider";
 import HotelDetailSliderSection from "./hotelDetailSliderSection";
-
+import { UserContext } from "@/context/userContext";
+import Reserve from "../Reserve";
+import { DateRangePicker } from "react-date-range";
+import { IoBedOutline } from "react-icons/io5";
+import { SlSizeFullscreen } from "react-icons/sl";
+import { BsPersonStanding } from "react-icons/bs";
+import { MdOutlineChildFriendly } from "react-icons/md";
 export const HotelDetailSection = () => {
-  // const breakpoints = {
-  //   968: {
-  //     spaceBetween: 30,
-  //     slidesPerView: 2,
-  //   },
-  //   640: {
-  //     spaceBetween: 20,
-  //     slidesPerView: 1,
-  //   },
-  //   0: {
-  //     spaceBetween: 20,
-  //     slidesPerView: 1,
-  //   },
-  // };
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { user, setUser, role, setRole, userId, token, setToken } =
+    useContext(UserContext);
 
   const [data, setdata] = useState(null);
   const [IsLoading, setIsLoading] = useState(true);
   const [days, setDays] = useState(1);
   const [roomCount, setRoomCount] = useState(1);
+  const [openModal, setOpenModal] = useState(false);
 
   async function getAll() {
     try {
@@ -93,18 +87,49 @@ export const HotelDetailSection = () => {
     }
   };
 
-  const [selectedDates, setSelectedDates] = useState({
-    startDate: null,
-    endDate: null,
-  });
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [selectedHotel, setSelectedHotel] = useState(null);
+  const { register, handleSubmit, reset } = useForm();
+  const [state, setState] = useState([
+    {
+      startDate: new Date(),
+      endDate: null,
+      key: "selection",
+    },
+  ]);
 
-  const updateRoomCount = (count) => {
-    setRoomCount(count);
-  };
-
-  // Function to update selected dates
-  const updateSelectedDates = (startDate, endDate) => {
-    setSelectedDates({ startDate, endDate });
+  const onSubmit = async (data) => {
+    try {
+      const days = differenceInDays(
+        new Date(state[0].endDate),
+        new Date(state[0].startDate)
+      );
+      const totalPrice = days * selectedRoom.price;
+      console.log(totalPrice);
+      const bookingData = {
+        ...data,
+        room: selectedRoom._id,
+        user: userId,
+        start_time: state[0].startDate,
+        end_time: state[0].endDate,
+        total_price: totalPrice,
+      };
+      const res = await axios.post(
+        `http://localhost:8000/api/book/${id}`,
+        bookingData
+      );
+      console.log(res.data);
+      reset();
+      setSelectedRoom(null);
+      console.log(userId);
+      setSelectedHotel(null);
+    } catch (error) {
+      console.log(error.message);
+      console.log(userId);
+      console.log(error.response.data);
+      console.log(error.message);
+      console.log(selectedRoom._id);
+    }
   };
 
   return (
@@ -312,8 +337,92 @@ export const HotelDetailSection = () => {
                       </li>
                     </ul>
                   </div>
+                  <div className="flex flex-col gap-10 py-5">
+                    <div>Rooms</div>
+                    {data.rooms.map((room) => (
+                      <div key={room._id}>
+                        <div className=" border rounded-lg  grid gap-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-center">
+                          <div>
+                            <img
+                              className="w-full object-cover rounded-lg"
+                              src={room.mainImage}
+                              alt=""
+                            />
+                          </div>
+                          <div className=" px-4 flex flex-col gap-4 py-4">
+                            <h1 className=" text-xl font-bold">{room.name}</h1>
+
+                            <div className=" flex  items-center py-5 gap-4 justify-between">
+                              <div className=" flex flex-col justify-center items-center">
+                                <div className=" px-4 shadow-md rounded-xl py-4 border">
+                                  <IoBedOutline />
+                                </div>
+                                <span className="">x{room.beds}</span>
+                              </div>
+                              <div className=" flex flex-col justify-center items-center">
+                                <div className=" px-4 shadow-md rounded-xl py-4 border">
+                                  <SlSizeFullscreen />
+                                </div>
+                                <span className="">{room.size}m</span>
+                              </div>
+                              <div className=" flex flex-col justify-center items-center">
+                                <div className=" px-4 shadow-md rounded-xl py-4 border">
+                                  <BsPersonStanding />
+                                </div>
+                                <span className="">x{room.maxPeople}</span>
+                              </div>
+                              <div className=" flex flex-col justify-center items-center">
+                                <div className=" px-4 shadow-md rounded-xl py-4 border">
+                                  <MdOutlineChildFriendly />
+                                </div>
+                                <span className="">x{room.children}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className=" py-4 px-14">
+                            <p className=" py-2   text-white bg-blue-600 rounded-full text-center">
+                              price: ${room.price}
+                            </p>
+                          </div>
+                        </div>
+
+                        <p></p>
+                        <button
+                          onClick={() => {
+                            setSelectedRoom(room);
+                            setSelectedHotel(data._id);
+                          }}
+                        >
+                          Rezerv et
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  {selectedRoom && (
+                    <form
+                      className="gap-2 flex flex-col "
+                      onSubmit={handleSubmit(onSubmit)}
+                    >
+                      <DateRangePicker
+                        onChange={(data) => setState([data.selection])}
+                        ranges={state}
+                        direction="horizontal"
+                        staticRanges={[]}
+                        inputRanges={[]}
+                        showSelectionPreview={true}
+                        moveRangeOnFirstSelection={false}
+                        months={1}
+                      />
+                      <button
+                        type="submit"
+                        className=" py-2 px-2 w-3/12 bg-blue-600 text-white rounded-xl"
+                      >
+                        Rezervasyon Yap
+                      </button>
+                    </form>
+                  )}
                   <div className="">
-                    <div className="flex flex-wrap justify-between items-center">
+                    <div className="flex flex-wrap py-5 border-t justify-between items-center">
                       <h1 className="font-bold text-2xl">Hotel's Location</h1>
                       <p className="flex items-center gap-1  text-gray-500 capitalize">
                         <CiLocationOn />
@@ -330,6 +439,7 @@ export const HotelDetailSection = () => {
                       )}
                     </div>
                   </div>
+
                   <div>
                     <h1 className="font-bold text-2xl pb-5">Reviews</h1>
                     <div className=" py-10 w-1/2 rounded-lg bg-gray-50  border flex flex-col justify-center items-center">
@@ -346,9 +456,8 @@ export const HotelDetailSection = () => {
                 </div>
                 <div className="  col-span-12 lg:col-span-4">slam</div>
               </div>
-              <div className="hotelDetails">
-                <div className="hotelDetailsTexts"></div>
-                <div className="hotelDetailsPrice">
+              <div className="">
+                {/* <div className="">
                   <h1>Perfect for a {days}-night stay!</h1>
                   <span>
                     Located in the real heart of Krakow, this property has an
@@ -358,12 +467,12 @@ export const HotelDetailSection = () => {
                     <b>${days * data.cheapestPrice * roomCount}</b> ({days}{" "}
                     nights)
                   </h2>
-                  {/* <button onClick={() => updateRoomCount(roomCount + 1)}>
+                   <button onClick={() => updateRoomCount(roomCount + 1)}>
                     Increase Room Count
-                  </button> */}
+                  </button> 
 
-                  <button onClick={handleClick}>Reserve or Book Now!</button>
-                </div>
+                
+                </div> */}
               </div>
             </div>
           </section>

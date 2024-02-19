@@ -10,6 +10,7 @@ import "swiper/css/pagination";
 
 // import required modules
 import { Pagination } from "swiper/modules";
+import { useTranslation } from "react-i18next";
 
 const TopDestinations = () => {
   // const { data, loading, error } = useFetch(
@@ -22,7 +23,7 @@ const TopDestinations = () => {
   async function getAll() {
     try {
       const res = await axios.get(
-        "http://localhost:8000/api/countByCity/?cities=berlin,baku"
+        "http://localhost:8000/api/countByCity/?cities=berlin,baku,gence"
       );
       setdata(res.data);
       setIsLoading(false);
@@ -51,10 +52,15 @@ const TopDestinations = () => {
       slidesPerView: 2,
     },
   };
+
+  const { t, i18n } = useTranslation();
+  function changeLang(lang) {
+    i18n.changeLanguage(lang);
+  }
   return (
     <section className="py-20 ">
       <div className="wrapper">
-        <SectionTitle children={"Top destinations"} />
+        <SectionTitle>{t("Top destinations")}</SectionTitle>
 
         <div className="py-10">
           <Swiper
@@ -118,10 +124,10 @@ const TopDestinations = () => {
                     </div>
                     <div className="flex justify-center items-center flex-col gap-1">
                       <h1 className="font-bold  hover:text-blue-600 duration-300 cursor-pointer text-lg">
-                        New Jersey
+                        Gence
                       </h1>
                       <p className=" cursor-pointer hover:text-blue-600 duration-200 font-semibold  text-gray-600">
-                        23 Hotels
+                        {data[2]} Hotels
                       </p>
                     </div>
                   </div>

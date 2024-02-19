@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import React, { createContext, useReducer } from "react";
 
 const INITIAL_STATE = {
   city: undefined,
@@ -8,9 +8,10 @@ const INITIAL_STATE = {
     children: undefined,
     room: undefined,
   },
+  selectedRooms: [],
 };
 
-export const SearchContext = createContext(INITIAL_STATE);
+export const SearchContext = createContext();
 
 const SearchReducer = (state, action) => {
   switch (action.type) {
@@ -18,6 +19,11 @@ const SearchReducer = (state, action) => {
       return action.payload;
     case "RESET_SEARCH":
       return INITIAL_STATE;
+    case "SELECT_ROOM":
+      return {
+        ...state,
+        selectedRooms: action.payload,
+      };
     default:
       return state;
   }
@@ -26,13 +32,16 @@ const SearchReducer = (state, action) => {
 export const SearchContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(SearchReducer, INITIAL_STATE);
 
+  const selectRoom = (selectedRooms) => {
+    dispatch({ type: "SELECT_ROOM", payload: selectedRooms });
+  };
+
   return (
     <SearchContext.Provider
       value={{
-        city: state.city,
-        dates: state.dates,
-        options: state.options,
+        ...state,
         dispatch,
+        selectRoom,
       }}
     >
       {children}

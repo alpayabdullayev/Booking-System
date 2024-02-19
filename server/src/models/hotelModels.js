@@ -37,9 +37,15 @@ const HotelSchema = new Schema(
       min: 0,
       max: 5,
     },
-    rooms: {
-      type: [String],
+    hotelStars: {
+      type: Number,
+      min: 0,
+      max: 5,
     },
+    // rooms: {
+    //   type: [String],
+    // },
+    rooms: [{ type: Schema.Types.ObjectId, ref: "Rooms" }],
     cheapestPrice: {
       type: Number,
       required: true,
@@ -55,7 +61,6 @@ const HotelSchema = new Schema(
       },
     ],
     mapAdress: { type: String },
-    hotelStars: { type: Number },
     languages: [ String ],
     about: { type: String },
   },

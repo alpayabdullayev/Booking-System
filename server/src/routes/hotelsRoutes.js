@@ -1,6 +1,6 @@
 import express from "express";
 
-import { countByCity,getHotelsByType,  createHotel, deleteHotel, getAllHotels, getHotelById, updateHotel, getHotels } from "../controller/hotelController.js";
+import { countByCity,getHotelsByType,  createHotel, deleteHotel, getAllHotels, getHotelById, updateHotel, getHotels, getHotelRooms } from "../controller/hotelController.js";
 import { verifyAdmin } from "../utils/verifyToken.js";
 import upload from "../middleware/upload.js";
 
@@ -30,3 +30,4 @@ HotelRouter.get("/hotels/type/:typeId", getHotelsByType);
 HotelRouter.get("/hotels/all", getAllHotels);
 
 HotelRouter.get("/hotels", getHotels);
+HotelRouter.get("/hotels/room/:id", getHotelRooms);

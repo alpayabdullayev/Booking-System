@@ -1,13 +1,20 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import App from "./App.jsx";
 import "./index.css";
 import { SearchContextProvider } from "./context/SearchContext.jsx";
+import { UserProvider } from "./context/userContext.jsx";
+import GlobalProvider from "./context/GlobalContext.jsx";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.render(
   <React.StrictMode>
-    <SearchContextProvider>
-      <App />
-    </SearchContextProvider>
-  </React.StrictMode>
+    <UserProvider>
+      <GlobalProvider>
+        <SearchContextProvider>
+          <App />
+        </SearchContextProvider>
+      </GlobalProvider>
+    </UserProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
 );

@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 
 const HotelImage = ({ src, alt }) => (
-  <div className=" rounded-lg overflow-hidden  group">
+  <div className=" w-full rounded-lg overflow-hidden  group">
     <img
       src={src}
       alt={alt}
-      className="  w-full group-hover:scale-105 rounded-lg  object-cover duration-500  min-h-full"
+      className="   w-full   h-full group-hover:scale-105 rounded-lg  object-cover duration-500  "
     />
   </div>
 );

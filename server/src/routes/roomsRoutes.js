@@ -8,13 +8,17 @@ import {
   updateRoomAvailability,
 } from "../controller/RoomlController.js";
 import { verifyAdmin } from "../utils/verifyToken.js";
+import upload from "../middleware/upload.js";
 
 export const RoomRouter = express.Router();
 
-RoomRouter.post("/room/:hotelid", verifyAdmin, createRoom);
+RoomRouter.post("/room", createRoom);
 
-RoomRouter.put("/availability/:id", updateRoomAvailability);
-RoomRouter.put("/room/:id", verifyAdmin, updateRoom);
+RoomRouter.put("/rooms/availability/:id", updateRoomAvailability);
+RoomRouter.put("/room/:id",upload.fields([
+  { name: 'mainImage', maxCount: 1 },
+  { name: 'images', maxCount: 5 }
+]), verifyAdmin, updateRoom);
 
 RoomRouter.delete("/room/:id/:hotelid", verifyAdmin, deleteRoom);
 

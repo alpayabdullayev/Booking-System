@@ -32,8 +32,8 @@ const Type = () => {
               ) : (
                 data &&
                 data.map((item, i) => (
-                  <div className="group ">
-                    <div className="rounded-lg overflow-hidden relative">
+                  <div className="group  flex flex-col justify-center items-center">
+                    <div className="rounded-full w-52 h-52 object-cover overflow-hidden relative">
                       <Link key={item._id} to={`/types/${item._id}`}>
                         {" "}
                         <img

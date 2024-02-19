@@ -1,48 +1,43 @@
-import mongoose,{Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const bookingSchema = new mongoose.Schema({
+const bookingSchema = new mongoose.Schema(
+  {
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "UsersHotel",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "UserBooking",
+      required: true,
     },
     hotel: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Hotels",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Hotels",
+      required: true,
     },
     room: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Rooms",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Rooms",
+      required: true,
     },
-    dates: [{
-        type: Date,
-        required: true
-    }],
-    totalPrice: {
-        type: Number,
-        required: true
-    },
-    phone: {
-        type: Number,
-        required: true
-    },
-    paidAt: {
-        type: Date,
-        required: true
-    },
-    paymentInfo: {
-        id: String,
-        status: String
-    },
-    status: {
-        type: String,
-        enum: ['Processing', 'Checked', 'Complete'],
-        default: 'Processing'
-    },
-    isActive : {type : Boolean, default :true}
 
-}, { timestamps: true });
+    start_time: {
+      type: Date,
+      required: true,
+    },
+    end_time: {
+      type: Date,
+      required: true,
+      validate: {
+        validator: function (value) {
+          return this.start_time < value;
+        },
+        message: "End time must be after start time",
+      },
+    },
+    total_price: {
+      type: Number,
+    },
+    isActive: { type: Boolean, default: true },
+  },
+  { timestamps: true }
+);
 
-export default mongoose.model("Bookings",bookingSchema)
+export default mongoose.model("Bookings", bookingSchema);
