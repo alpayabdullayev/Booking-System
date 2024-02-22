@@ -35,11 +35,11 @@
 // //   try {
 // //     const bookingId = req.params.id;
 // //     const booking = await Booking.findById(bookingId).populate('user hotel room');
-    
+
 // //     if (!booking) {
 // //       return res.status(404).json({ message: "Rezervasyon bulunamadı." });
 // //     }
-    
+
 // //     res.status(200).json(booking);
 // //   } catch (error) {
 // //     next(error);
@@ -81,19 +81,27 @@
 //   }
 // };
 
-
-
 import Booking from "../models/bookingModels.js";
 import User from "../models/userModels.js";
 
 const createBooking = async (req, res) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const bookingDate = new Date(req.body.start_time);
+
+  if (bookingDate < today) {
+    return res
+      .status(401)
+      .json({ message: "Geçmiş bir tarihe rezervasyon yapılamaz." });
+  }
+
   const booking = new Booking({
     hotel: req.params.hotelId,
     room: req.body.room,
     user: req.body.user,
     start_time: req.body.start_time,
     end_time: req.body.end_time,
-    total_price : req.body.total_price
+    total_price: req.body.total_price,
   });
 
   try {
@@ -104,11 +112,9 @@ const createBooking = async (req, res) => {
     });
 
     if (existingBooking) {
-      return res
-        .status(400)
-        .json({
-          message: "Bu oda belirtilen zaman aralığında zaten rezerve edilmiş.",
-        });
+      return res.status(400).json({
+        message: "Bu oda belirtilen zaman aralığında zaten rezerve edilmiş.",
+      });
     }
 
     const newBooking = await booking.save();
@@ -119,18 +125,20 @@ const createBooking = async (req, res) => {
 
     res.status(201).json(newBooking);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
 
-
 export const getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find().populate("room").populate("hotel").populate("user")
+    const bookings = await Booking.find()
+      .populate("room")
+      .populate("hotel")
+      .populate("user");
     res.status(200).json(bookings);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-}
+};
 
 export { createBooking };

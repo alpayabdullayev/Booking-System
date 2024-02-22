@@ -16,6 +16,8 @@ import "react-date-range/dist/theme/default.css";
 import "./index.scss";
 import { differenceInDays } from "date-fns";
 
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import axios from "axios";
 import { SearchContext } from "@/context/SearchContext";
 import SearchComponents from "../common/Search";
@@ -28,6 +30,8 @@ import { IoBedOutline } from "react-icons/io5";
 import { SlSizeFullscreen } from "react-icons/sl";
 import { BsPersonStanding } from "react-icons/bs";
 import { MdOutlineChildFriendly } from "react-icons/md";
+import toast, { Toaster } from "react-hot-toast";
+import StripeCheckout from "react-stripe-checkout";
 export const HotelDetailSection = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -89,6 +93,8 @@ export const HotelDetailSection = () => {
 
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [selectedHotel, setSelectedHotel] = useState(null);
+  const [totalPrice, setTotalPrice] = useState(0);
+
   const { register, handleSubmit, reset } = useForm();
   const [state, setState] = useState([
     {
@@ -98,37 +104,91 @@ export const HotelDetailSection = () => {
     },
   ]);
 
-  const onSubmit = async (data) => {
+  //error.response.data.message
+
+  const publishableKey =
+    "pk_test_51OkuxcGezhrpHtHsTwcCLYYLOyRKuix2BxtNXLolGhkdJykXFX7ZUIdQzWfVxM9OMygZeFYYZgxlDULO4adgAWQY003r8valPM";
+
+  // const handleSuccess = () => {
+  //   console.log("ugurludu");
+  // };
+  // const handleFailure = () => {
+  //   console.log("ugursuz");
+  // };
+  // const handleResponse = (isSuccess) => {
+  //   if (isSuccess) {
+  //     console.log("ugurludu");
+  //     alert("isledi");
+  //     // toast.success("Successfully Rezerv");
+  //   } else {
+  //     console.log("ugursuz");
+
+  //     // toast.success("Successfully Rezerv...");
+  //   }
+  // };
+
+  const onSubmit = async (stripeToken) => {
     try {
       const days = differenceInDays(
         new Date(state[0].endDate),
         new Date(state[0].startDate)
       );
-      const totalPrice = days * selectedRoom.price;
-      console.log(totalPrice);
+
+      const calculatedTotalPrice = days * selectedRoom.price;
+      setTotalPrice(calculatedTotalPrice);
+
       const bookingData = {
         ...data,
         room: selectedRoom._id,
         user: userId,
         start_time: state[0].startDate,
         end_time: state[0].endDate,
-        total_price: totalPrice,
+        total_price: calculatedTotalPrice,
       };
-      const res = await axios.post(
-        `http://localhost:8000/api/book/${id}`,
-        bookingData
-      );
-      console.log(res.data);
-      reset();
-      setSelectedRoom(null);
-      console.log(userId);
-      setSelectedHotel(null);
+
+      const paymentResponse = await axios({
+        url: "http://localhost:8000/payment",
+        method: "post",
+        data: {
+          amount: calculatedTotalPrice * 100,
+          token: stripeToken.id,
+        },
+      });
+
+      if (paymentResponse.status === 200) {
+        const bookingResponse = await axios.post(
+          `http://localhost:8000/api/book/${id}`,
+          bookingData
+        );
+
+        if (bookingResponse.status === 200) {
+          handleResponse(true);
+          console.log(bookingResponse.data);
+          reset();
+          setSelectedRoom(null);
+          setSelectedHotel(null);
+        } else {
+          handleResponse(false);
+
+          if (bookingResponse.status === 400) {
+            toast.error(
+              "This room has already been booked for the specified time period."
+            );
+          } else if (bookingResponse.status === 401) {
+            toast.error("Invalid date selection.");
+          }
+        }
+      } else {
+        handleResponse(false);
+        console.log("Payment failed");
+      }
     } catch (error) {
-      console.log(error.message);
-      console.log(userId);
-      console.log(error.response.data);
-      console.log(error.message);
-      console.log(selectedRoom._id);
+      handleResponse(false);
+      console.error(error);
+      if (error.response && error.response.data) {
+        console.log(error.response.data);
+      }
+      toast.error("Rezerv alinmadi");
     }
   };
 
@@ -412,13 +472,19 @@ export const HotelDetailSection = () => {
                         showSelectionPreview={true}
                         moveRangeOnFirstSelection={false}
                         months={1}
+                        minDate={new Date()}
                       />
-                      <button
-                        type="submit"
-                        className=" py-2 px-2 w-3/12 bg-blue-600 text-white rounded-xl"
-                      >
-                        Rezervasyon Yap
-                      </button>
+
+                      <StripeCheckout
+                        stripeKey={publishableKey}
+                        label="Pay Now"
+                        name="Pay With Credit Card"
+                        billingAddress
+                        shippingAddress
+                        description={`Your total is $${totalPrice}`}
+                        amount={totalPrice * 100}
+                        token={onSubmit}
+                      />
                     </form>
                   )}
                   <div className="">

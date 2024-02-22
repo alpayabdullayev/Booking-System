@@ -2,6 +2,7 @@ import User from "../models/userModels.js";
 import bcrypt from "bcryptjs";
 import { createError } from "../utils/error.js";
 import jwt from "jsonwebtoken";
+import sendMail from "../utils/email.js";
 
 export const register = async (req, res, next) => {
   try {
@@ -9,7 +10,7 @@ export const register = async (req, res, next) => {
     const userExists = await User.findOne({ username });
 
     if (userExists) {
-      return res.status(409).send("username already exists");
+      return res.status(409).json({message : "username already exists"});
     }
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
@@ -19,13 +20,66 @@ export const register = async (req, res, next) => {
       password: hash,
     });
 
+    newUser.emailVerification()
+
     await newUser.save();
-    res.status(200).send(newUser);
+    const emailText = `Please click the following link to verify your email: 
+    ${process.env.CLIENT_URL}/Verified?token=${newUser.emailVerificationToken}`
+ 
+     await sendMail(newUser.email, 'Please verify your email', emailText)
+ 
+    
+    res.status(200).send({message : "Please verify your email"});
   } catch (err) {
     next(err);
   }
 };
 
+
+export const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query
+    console.log(token)
+    const user = await User.findOne({ emailVerificationToken: token })
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid token.' })
+    }
+
+    user.verified = true
+    user.emailVerificationToken = undefined
+    await user.save()
+    const access_token = jwt.sign(
+      {
+        userId: user.id,
+        isAdmin: user.isAdmin,
+        role: user.role,
+        username: user.username,
+        bookings: user.bookings,
+        avatar:user.avatar,
+        phoneNumber:user.phoneNumber,
+        email:user.email
+      },
+      process.env.JWT,
+      { expiresIn: "1h" }
+    );
+
+    const { password, isAdmin, ...otherDetails } = user._doc;
+    res
+      .cookie("access_token", access_token, {
+        httpOnly: true,
+      })
+      .status(200)
+      .json({
+        message: "Login successful",
+        details: { ...otherDetails },
+        isAdmin,
+        access_token,
+      });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
 
 
 export const login = async (req, res, next) => {
@@ -41,7 +95,16 @@ export const login = async (req, res, next) => {
       return next(createError(400, "Wrong password or username!"));
 
     const token = jwt.sign(
-      { userId: user.id, isAdmin: user.isAdmin,role : user.role, username: user.username },
+      {
+        userId: user.id,
+        isAdmin: user.isAdmin,
+        role: user.role,
+        username: user.username,
+        bookings: user.bookings,
+        avatar:user.avatar,
+        phoneNumber:user.phoneNumber,
+        email:user.email
+      },
       process.env.JWT,
       { expiresIn: "1h" }
     );
@@ -62,3 +125,6 @@ export const login = async (req, res, next) => {
     next(err);
   }
 };
+
+
+

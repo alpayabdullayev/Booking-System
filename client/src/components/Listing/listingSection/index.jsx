@@ -12,6 +12,8 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FilterSectionHotelStars from "../FilerSectionCategory";
 import { Slider } from "antd";
+import MapChart from "@/components/AboutPage/MapChart";
+import MapStatic from "@/components/AboutPage/map";
 
 const ListingSection = () => {
   const [data, setData] = useState(null);
@@ -70,6 +72,10 @@ const ListingSection = () => {
                     placeholder="Search..."
                   />
                 </div>
+                <div>
+                  <MapStatic />
+                </div>
+
                 <Accordion className=" ">
                   <div className=" bg-gray-50  border-none">
                     <AccordionSummary

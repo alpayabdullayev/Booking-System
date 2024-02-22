@@ -13,7 +13,7 @@ const MainCard = ({ item }) => {
     return stars;
   };
 
-  const { handleAddToWishlist } = useContext(GlobalContext);
+  const { handleAddToWishlist, wishlist } = useContext(GlobalContext);
 
   return (
     <>
@@ -37,9 +37,29 @@ const MainCard = ({ item }) => {
           <div className="absolute top-2 right-2">
             <button onClick={() => handleAddToWishlist(item._id)}>
               <span>
-                <FaHeart />
+                {wishlist.find((x) => x.hotel._id === item._id) ? (
+                  <span className="text-red-500">
+                    <FaHeart />
+                  </span>
+                ) : (
+                  <span className="">
+                    <FaHeart />
+                  </span>
+                )}
+                {/* <FaHeart /> */}
               </span>
             </button>
+            {/* <button onClick={() => handleAddToWishlist(item._id)}>
+              {item.wishlist.some((product) => product._id === item._id) ? (
+                <span className="text-red-500">
+                  <FaHeart />
+                </span>
+              ) : (
+                <span className="">
+                  <FaHeart />
+                </span>
+              )}
+            </button> */}
           </div>
         </div>
         <div className="p-4 flex flex-col gap-3">

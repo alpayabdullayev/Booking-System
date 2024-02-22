@@ -2,15 +2,25 @@ import User from "../models/userModels.js";
 import bcrypt from 'bcrypt';
 
 
+export const createUser = async (req, res) => {
+  try {
+    const { username, password, role,email } = req.body;
 
-export const createUser = async (req, res, next) => {
-    try {
-      const newUser = new User(req.body);
-      await newUser.save();
-      res.status(200).json(newUser);
-    } catch (err) {
-      next(err);
-    }
+    const rounds = 10;
+    const hashedPassword = await bcrypt.hash(password, rounds);
+
+    const newUser = new User({
+      username,
+      password: hashedPassword,
+      role,
+      email
+    });
+
+    await newUser.save();
+    res.status(200).json({ message: "Created User", newUser });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 export const updateUser = async (req, res, next) => {
@@ -54,7 +64,14 @@ export const deleteUser = async (req,res,next)=>{
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id).populate('wishlist.hotel');
+    const user = await User.findById(id)
+    .populate({
+      path: 'wishlist.hotel'
+    })
+    .populate({
+      path: 'bookings',
+      populate: [{ path: 'room' }, { path: 'hotel' },{ path: 'user' }]
+    });
     if (!user) {
       return res.status(404).json({ message: 'Not Found' });
     }

@@ -5,6 +5,7 @@ import "./index.css";
 import { SearchContextProvider } from "./context/SearchContext.jsx";
 import { UserProvider } from "./context/userContext.jsx";
 import GlobalProvider from "./context/GlobalContext.jsx";
+import "./i18n";
 
 ReactDOM.render(
   <React.StrictMode>

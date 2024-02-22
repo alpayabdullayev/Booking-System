@@ -8,6 +8,8 @@ import Sub from "@/components/common/sub";
 import HorizontalSection from "@/components/HomePage/HorizontalSection";
 import Banner from "@/components/common/banner";
 import WishlistSection from "@/components/wishlist";
+// import Stripe from "@/stripe";
+import Stripe from "@/stripe";
 
 const Home = () => {
   return (
@@ -21,6 +23,7 @@ const Home = () => {
         <Type />
         <HorizontalSection />
         <Featured />
+        <Stripe />
         <Sub />
       </main>
     </>

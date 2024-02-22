@@ -13,11 +13,11 @@ const HotelSchema = new Schema(
     }],
     city: {
       type: String,
-      required: true,
+      // required: true,
     },
     address: {
       type: String,
-      required: true,
+      // required: true,
     },
     distance: {
       type: String,
@@ -26,11 +26,11 @@ const HotelSchema = new Schema(
     images: [{ type: String, trim: true }],
     title: {
       type: String,
-      required: true,
+      // required: true,
     },
     desc: {
       type: String,
-      required: true,
+      // required: true,
     },
     rating: {
       type: Number,
@@ -48,7 +48,7 @@ const HotelSchema = new Schema(
     rooms: [{ type: Schema.Types.ObjectId, ref: "Rooms" }],
     cheapestPrice: {
       type: Number,
-      required: true,
+      // required: true,
     },
     featured: {
       type: Boolean,

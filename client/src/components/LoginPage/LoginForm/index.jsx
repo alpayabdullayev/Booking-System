@@ -1,13 +1,13 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
 import { UserContext } from "@/context/userContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser, setRole, setToken,setuserId } = useContext(UserContext);
+  const { setUser, setRole, setToken, setuserId } = useContext(UserContext);
   const navigate = useNavigate();
 
   async function Login(e) {
@@ -20,10 +20,10 @@ const LoginForm = () => {
       localStorage.setItem("token", response.data.token);
       const decoded = jwtDecode(response.data.token);
       localStorage.setItem("role", decoded.role);
-      localStorage.setItem("userId",  decoded.userId)
+      localStorage.setItem("userId", decoded.userId);
       localStorage.setItem("username", decoded.username);
       setUser(decoded.username);
-      setuserId(decoded.userId)
+      setuserId(decoded.userId);
       setToken(response.data.token);
       setRole(decoded.role);
       navigate("/profile");
@@ -106,8 +106,8 @@ const LoginForm = () => {
                 </div>
               </form>
 
-              <p class="mt-10 text-center text-sm text-gray-500">
-                Not a member?
+              <p class="mt-10 text-center text-sm text-blue-500">
+                <Link to={"/register"}> Not a member?</Link>
               </p>
             </div>
           </div>

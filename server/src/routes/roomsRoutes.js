@@ -15,10 +15,15 @@ export const RoomRouter = express.Router();
 RoomRouter.post("/room", createRoom);
 
 RoomRouter.put("/rooms/availability/:id", updateRoomAvailability);
-RoomRouter.put("/room/:id",upload.fields([
-  { name: 'mainImage', maxCount: 1 },
-  { name: 'images', maxCount: 5 }
-]), verifyAdmin, updateRoom);
+RoomRouter.put(
+  "/room/:id",
+  upload.fields([
+    { name: "mainImage", maxCount: 1 },
+    { name: "images", maxCount: 5 },
+  ]),
+  verifyAdmin,
+  updateRoom
+);
 
 RoomRouter.delete("/room/:id/:hotelid", verifyAdmin, deleteRoom);
 

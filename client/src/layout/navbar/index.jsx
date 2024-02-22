@@ -42,7 +42,6 @@ const Navbar = () => {
     setToken(null);
     setRole(null);
     setUser(null);
-    setBasket(null);
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -98,7 +97,7 @@ const Navbar = () => {
                   <NavigationMenuContent className=" ">
                     <ul className="grid   gap-3    p-6 md:w-[100px] lg:w-[200px] ">
                       <li className="row-span-3 cursor-pointer">
-                        Search Hotel Sidebar
+                        <NavLink to={"/listing"}> Search Hotel Sidebar</NavLink>
                       </li>
                     </ul>
                   </NavigationMenuContent>

@@ -6,7 +6,7 @@ import upload from "../middleware/upload.js";
 
 export const HotelRouter = express.Router();
 
-HotelRouter.post("/hotels",verifyAdmin,upload.fields([
+HotelRouter.post("/hotels",upload.fields([
     { name: 'mainImage', maxCount: 1 },
     { name: 'images', maxCount: 5 }
 ]),createHotel);

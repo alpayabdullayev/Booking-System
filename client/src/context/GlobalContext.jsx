@@ -3,12 +3,13 @@ import { UserContext } from "./userContext";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 export const GlobalContext = createContext();
 
 const GlobalProvider = ({ children }) => {
   const [basket, setBasket] = useState(null);
-  const [wishlist, setWishlist] = useState(null);
+  const [wishlist, setWishlist] = useState([]);
   // const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { token, user } = useContext(UserContext);
@@ -25,6 +26,7 @@ const GlobalProvider = ({ children }) => {
       }
 
       const decodedToken = jwtDecode(token);
+      console.log("decodedToken", decodedToken);
       const userId = decodedToken.userId;
 
       const response = await axios.post(
@@ -38,6 +40,7 @@ const GlobalProvider = ({ children }) => {
           },
         }
       );
+      toast.success("Successfully");
 
       console.log("Wishlist updated:", response.data);
       setWishlist(response.data.user.wishlist);
@@ -46,12 +49,11 @@ const GlobalProvider = ({ children }) => {
     }
   }
 
-
   async function fetchWishlist() {
     try {
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.userId;
-      console.log("userId : ", userId);
+      // console.log("userId : ", userId);
       const res = await axios.get(`http://localhost:8000/api/user/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -66,7 +68,7 @@ const GlobalProvider = ({ children }) => {
     // }
   }
 
-  const data = {handleAddToWishlist,fetchWishlist,wishlist};
+  const data = { handleAddToWishlist, fetchWishlist, wishlist };
   return (
     <>
       <GlobalContext.Provider value={data}>{children}</GlobalContext.Provider>
