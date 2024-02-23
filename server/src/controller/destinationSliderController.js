@@ -12,8 +12,8 @@ export const createDestinationSlider = async (req, res) => {
       })
     );
     const mainImageResult = await cloudinary.uploader.upload(
-        req.files.mainImage[0].path
-      );
+      req.files.mainImage[0].path
+    );
 
     const newDestinationSlider = new DestinationSlider({
       images: imagesResults,
@@ -28,32 +28,33 @@ export const createDestinationSlider = async (req, res) => {
   }
 };
 
-
 export const deleteDestinationSlider = async (req, res, next) => {
-    try {
-      const { id } = req.params;
-      const deletedDestinationSlider = await DestinationSlider.findByIdAndDelete(id);
-      res.status(200).json(deletedDestinationSlider);
-    } catch (err) {
-      next(err);
-    }
-  };
-  
-  export const getDestinationSliderById = async (req, res, next) => {
-    try {
-      const { id } = req.params;
-      const destinationSlider = await DestinationSlider.findById(id)
-      res.status(200).json(destinationSlider);
-    } catch (err) {
-      next(err);
-    }
-  };
-  
-  export const getAllDestinationSliders = async (req, res, next) => {
-    try {
-      const DestinationSliders = await DestinationSlider.find({})
-      res.status(200).json(DestinationSliders);
-    } catch (err) {
-      next(err);
-    }
-  };
+  try {
+    const { id } = req.params;
+    const deletedDestinationSlider = await DestinationSlider.findByIdAndDelete(
+      id
+    );
+    res.status(200).json(deletedDestinationSlider);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getDestinationSliderById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const destinationSlider = await DestinationSlider.findById(id);
+    res.status(200).json(destinationSlider);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getAllDestinationSliders = async (req, res, next) => {
+  try {
+    const DestinationSliders = await DestinationSlider.find({});
+    res.status(200).json(DestinationSliders);
+  } catch (err) {
+    next(err);
+  }
+};

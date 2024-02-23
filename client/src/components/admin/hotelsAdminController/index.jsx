@@ -3,6 +3,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Dashboard from "../Dashboard";
 import axios from "axios";
+import { FaTrash } from "react-icons/fa";
+import { RxUpdate } from "react-icons/rx";
 
 const HotelsAdminController = () => {
   const [hotel, setHotel] = useState(null);
@@ -38,6 +40,10 @@ const HotelsAdminController = () => {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  function navigateUpdate(hotelId) {
+    navigate(`/admin/hotel/${hotelId}/update`);
   }
 
   return (
@@ -102,7 +108,7 @@ const HotelsAdminController = () => {
                       <td className="py-2 px-4 border border-gray-300">
                         {item.name}
                       </td>
-                      <td className="py-2 px-4 border border-gray-300">
+                      <td className="py-2 capitalize px-4 border border-gray-300">
                         {item.city}
                       </td>
                       <td className="py-2 px-4 border border-gray-300">
@@ -114,13 +120,13 @@ const HotelsAdminController = () => {
                           className="bg-red-500 text-white py-1 px-2 rounded-md mr-2"
                           onClick={() => HotelDelete(item._id)}
                         >
-                          delete
+                          <FaTrash />
                         </button>
                         <button
                           className="bg-blue-500 text-white py-1 px-2 rounded-md"
                           onClick={() => navigateUpdate(item._id)}
                         >
-                          update
+                          <RxUpdate />
                         </button>
                       </td>
                     </tr>

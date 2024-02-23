@@ -10,7 +10,7 @@ const GetAll = () => {
 
   async function getAll() {
     try {
-      const res = await axios.get("http://localhost:8000/api/hotels");
+      const res = await axios.get("http://localhost:8000/api/hotels?limit=6");
       setData(res.data);
       setIsLoading(false);
     } catch (error) {

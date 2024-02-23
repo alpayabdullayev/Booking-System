@@ -6,11 +6,13 @@ const HotelSchema = new Schema(
       type: String,
       required: true,
     },
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "HotelType",
-      required: true,
-    }],
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "HotelType",
+        required: true,
+      },
+    ],
     city: {
       type: String,
       // required: true,
@@ -56,12 +58,20 @@ const HotelSchema = new Schema(
     },
     reviews: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Review",
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "UsersHotel",
+          required: true,
+        },
+        ratings: { type: Number, min: 1, max: 5 },
+        comment: {
+          type: String,
+          required: true,
+        },
       },
     ],
     mapAdress: { type: String },
-    languages: [ String ],
+    languages: [String],
     about: { type: String },
   },
   { timestamps: true }

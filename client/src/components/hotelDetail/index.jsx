@@ -32,6 +32,10 @@ import { BsPersonStanding } from "react-icons/bs";
 import { MdOutlineChildFriendly } from "react-icons/md";
 import toast, { Toaster } from "react-hot-toast";
 import StripeCheckout from "react-stripe-checkout";
+import MapChart from "../AboutPage/MapChart";
+import MapStatic from "../AboutPage/map";
+import ContactForm from "../ContactComponents/ContactForm";
+import { GlobalContext } from "@/context/GlobalContext";
 export const HotelDetailSection = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -43,6 +47,7 @@ export const HotelDetailSection = () => {
   const [days, setDays] = useState(1);
   const [roomCount, setRoomCount] = useState(1);
   const [openModal, setOpenModal] = useState(false);
+  const { saveBookingData } = useContext(GlobalContext);
 
   async function getAll() {
     try {
@@ -115,19 +120,239 @@ export const HotelDetailSection = () => {
   // const handleFailure = () => {
   //   console.log("ugursuz");
   // };
-  // const handleResponse = (isSuccess) => {
-  //   if (isSuccess) {
-  //     console.log("ugurludu");
-  //     alert("isledi");
-  //     // toast.success("Successfully Rezerv");
-  //   } else {
-  //     console.log("ugursuz");
+  const handleResponse = (isSuccess) => {
+    if (isSuccess) {
+      console.log("ugurludu");
+      alert("isledi");
+      toast.success("Successfully Rezerv");
+    } else {
+      console.log("ugursuz");
 
-  //     // toast.success("Successfully Rezerv...");
+      // toast.success("Successfully Rezerv...");
+    }
+  };
+
+  // const onSubmit = async (stripeToken) => {
+  //   try {
+  //     const days = differenceInDays(
+  //       new Date(state[0].endDate),
+  //       new Date(state[0].startDate)
+  //     );
+
+  //     const calculatedTotalPrice = days * selectedRoom.price;
+  //     setTotalPrice(calculatedTotalPrice);
+
+  //     const bookingData = {
+  //       ...data,
+  //       room: selectedRoom._id,
+  //       user: userId,
+  //       start_time: state[0].startDate,
+  //       end_time: state[0].endDate,
+  //       total_price: calculatedTotalPrice,
+  //     };
+
+  //     const paymentResponse = await axios({
+  //       url: "http://localhost:8000/payment",
+  //       method: "post",
+  //       data: {
+  //         amount: calculatedTotalPrice * 100,
+  //         token: stripeToken.id,
+  //       },
+  //     }
+  //     );
+  //     const MySwal = withReactContent(Swal);
+  //     await MySwal.fire({
+  //       title: "Rezerv Uğurla Başa Çatdı!",
+  //       text: "You clicked the button!",
+  //       icon: "success",
+  //     });
+  //     console.log(paymentResponse)
+
+  //     if (paymentResponse.status === 200) {
+  //       const bookingResponse = await axios.post(
+  //         `http://localhost:8000/api/book/${id}`,
+  //         bookingData
+  //       );
+
+  //       if (bookingResponse.status === 200) {
+  //         handleResponse(true);
+  //         console.log(bookingResponse.data);
+  //         reset();
+  //         setSelectedRoom(null);
+  //         setSelectedHotel(null);
+  //       } else {
+  //         handleResponse(false);
+
+  //         if (bookingResponse.status === 400) {
+  //           toast.error(
+  //             "This room has already been booked for the specified time period."
+  //           );
+  //         } else if (bookingResponse.status === 401) {
+  //           toast.error("Invalid date selection.");
+  //         }
+  //       }
+  //     } else {
+  //       handleResponse(false);
+  //       console.log("Payment failed");
+  //     }
+
+  //   } catch (error) {
+  //     handleResponse(false);
+  //     console.error(error);
+  //     if (error.response && error.response.data) {
+  //       console.log(error.response.data);
+  //     }
+  //     toast.error("bu otaglar secilmisdir");
   //   }
   // };
 
-  const onSubmit = async (stripeToken) => {
+  // Функция для отправки запроса на оплату
+  // const processPayment = async (stripeToken, calculatedTotalPrice) => {
+  //   try {
+  //     const paymentResponse = await axios({
+  //       url: "http://localhost:8000/payment",
+  //       method: "post",
+  //       data: {
+  //         amount: calculatedTotalPrice * 100,
+  //         token: stripeToken.id,
+  //       },
+  //     });
+
+  //     if (paymentResponse.status === 200) {
+  //       return true; // Возвращаем true, если оплата прошла успешно
+  //     } else {
+  //       console.log("Payment failed");
+  //       return false; // Возвращаем false, если оплата не удалась
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Ошибка при обработке платежа");
+  //     return false; // Возвращаем false в случае ошибки
+  //   }
+  // };
+
+  // Функция для резервирования номера
+  // const processBooking = async (bookingData, id) => {
+  //   try {
+  //     const bookingResponse = await axios.post(
+  //       `http://localhost:8000/api/book/${id}`,
+  //       bookingData
+  //     );
+
+  //     if (bookingResponse.status === 200) {
+  //       return true; // Возвращаем true, если резервирование прошло успешно
+  //     } else {
+  //       console.log("Booking failed");
+  //       return false; // Возвращаем false, если резервирование не удалось
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Ошибка при резервировании номера");
+  //     return false; // Возвращаем false в случае ошибки
+  //   }
+  // };
+
+  // Функция для обработки отправки данных (резерв и оплата)
+  // const onSubmit = async (stripeToken) => {
+  //   try {
+  //     const days = differenceInDays(
+  //       new Date(state[0].endDate),
+  //       new Date(state[0].startDate)
+  //     );
+
+  //     const calculatedTotalPrice = days * selectedRoom.price;
+  //     setTotalPrice(calculatedTotalPrice);
+
+  //     const bookingData = {
+  //       ...data,
+  //       room: selectedRoom._id,
+  //       user: userId,
+  //       start_time: state[0].startDate,
+  //       end_time: state[0].endDate,
+  //       total_price: calculatedTotalPrice,
+  //     };
+
+  //     const paymentResult = await processPayment(
+  //       stripeToken,
+  //       calculatedTotalPrice
+  //     );
+  //     if (paymentResult) {
+  //       const bookingResult = await processBooking(bookingData, id);
+  //       if (bookingResult) {
+  //         handleResponse(true);
+  //         console.log("Booking and payment successful");
+  //         reset();
+  //         setSelectedRoom(null);
+  //         setSelectedHotel(null);
+  //       } else {
+  //         handleResponse(false);
+  //       }
+  //     } else {
+  //       handleResponse(false);
+  //     }
+  //   } catch (error) {
+  //     handleResponse(false);
+  //     console.error(error);
+  //     if (error.response && error.response.data) {
+  //       console.log(error.response.data);
+  //     }
+  //   }
+  // };
+
+  // Функция для отправки запроса на бронирование
+  const processBooking = async (bookingData, id) => {
+    try {
+      const bookingResponse = await axios.post(
+        `http://localhost:8000/api/book/${id}`,
+        bookingData
+      );
+
+      if (bookingResponse.status === 201) {
+        return true; // Возвращаем true, если бронирование прошло успешно
+      } else {
+        console.log("Booking failed");
+        return false; // Возвращаем false, если бронирование не удалось
+      }
+    } catch (error) {
+      console.error(error);
+      if (error.response && error.response.status === 400) {
+        // Если бронирование уже существует для данного номера и временного периода,
+        // возвращаем ошибку с соответствующим сообщением
+        toast.error("Bu oda belirtilen zaman aralığında zaten rezerve edilmiş");
+      } else {
+        // В случае других ошибок возвращаем общее сообщение об ошибке
+        toast.error("1gun rezerv etmek mumkun deyil");
+      }
+      return false; // Возвращаем false в случае ошибки
+    }
+  };
+
+  const processPayment = async (stripeToken, calculatedTotalPrice) => {
+    try {
+      const paymentResponse = await axios({
+        url: "http://localhost:8000/payment",
+        method: "post",
+        data: {
+          amount: calculatedTotalPrice * 100,
+          token: stripeToken.id,
+        },
+      });
+
+      if (paymentResponse.status === 200) {
+        return true; // Возвращаем true, если оплата прошла успешно
+      } else {
+        console.log("Payment failed");
+        return false; // Возвращаем false, если оплата не удалась
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Ошибка при обработке платежа");
+      return false; // Возвращаем false в случае ошибки
+    }
+  };
+
+  // Функция для обработки бронирования
+  const handleBooking = async () => {
     try {
       const days = differenceInDays(
         new Date(state[0].endDate),
@@ -146,41 +371,13 @@ export const HotelDetailSection = () => {
         total_price: calculatedTotalPrice,
       };
 
-      const paymentResponse = await axios({
-        url: "http://localhost:8000/payment",
-        method: "post",
-        data: {
-          amount: calculatedTotalPrice * 100,
-          token: stripeToken.id,
-        },
-      });
+      saveBookingData(bookingData);
 
-      if (paymentResponse.status === 200) {
-        const bookingResponse = await axios.post(
-          `http://localhost:8000/api/book/${id}`,
-          bookingData
-        );
-
-        if (bookingResponse.status === 200) {
-          handleResponse(true);
-          console.log(bookingResponse.data);
-          reset();
-          setSelectedRoom(null);
-          setSelectedHotel(null);
-        } else {
-          handleResponse(false);
-
-          if (bookingResponse.status === 400) {
-            toast.error(
-              "This room has already been booked for the specified time period."
-            );
-          } else if (bookingResponse.status === 401) {
-            toast.error("Invalid date selection.");
-          }
-        }
+      const bookingResult = await processBooking(bookingData, id);
+      if (bookingResult) {
+        navigate("/checkout");
       } else {
         handleResponse(false);
-        console.log("Payment failed");
       }
     } catch (error) {
       handleResponse(false);
@@ -188,9 +385,41 @@ export const HotelDetailSection = () => {
       if (error.response && error.response.data) {
         console.log(error.response.data);
       }
-      toast.error("Rezerv alinmadi");
     }
   };
+
+  // Функция для обработки оплаты
+  // const handlePayment = async (stripeToken) => {
+  //   try {
+  //     const days = differenceInDays(
+  //       new Date(state[0].endDate),
+  //       new Date(state[0].startDate)
+  //     );
+
+  //     const calculatedTotalPrice = days * selectedRoom.price;
+  //     setTotalPrice(calculatedTotalPrice);
+
+  //     const paymentResult = await processPayment(
+  //       stripeToken,
+  //       calculatedTotalPrice
+  //     );
+  //     if (paymentResult) {
+  //       handleResponse(true);
+  //       console.log("Payment successful");
+  //       reset();
+  //       setSelectedRoom(null);
+  //       setSelectedHotel(null);
+  //     } else {
+  //       handleResponse(false);
+  //     }
+  //   } catch (error) {
+  //     handleResponse(false);
+  //     console.error(error);
+  //     if (error.response && error.response.data) {
+  //       console.log(error.response.data);
+  //     }
+  //   }
+  // };
 
   return (
     <>
@@ -461,7 +690,7 @@ export const HotelDetailSection = () => {
                   {selectedRoom && (
                     <form
                       className="gap-2 flex flex-col "
-                      onSubmit={handleSubmit(onSubmit)}
+                      onSubmit={handleSubmit(handleBooking)}
                     >
                       <DateRangePicker
                         onChange={(data) => setState([data.selection])}
@@ -474,8 +703,9 @@ export const HotelDetailSection = () => {
                         months={1}
                         minDate={new Date()}
                       />
+                      <button type="submit">SALAM</button>
 
-                      <StripeCheckout
+                      {/* <StripeCheckout
                         stripeKey={publishableKey}
                         label="Pay Now"
                         name="Pay With Credit Card"
@@ -483,8 +713,8 @@ export const HotelDetailSection = () => {
                         shippingAddress
                         description={`Your total is $${totalPrice}`}
                         amount={totalPrice * 100}
-                        token={onSubmit}
-                      />
+                        token={onSubmit} 
+                      />*/}
                     </form>
                   )}
                   <div className="">
@@ -509,18 +739,34 @@ export const HotelDetailSection = () => {
                   <div>
                     <h1 className="font-bold text-2xl pb-5">Reviews</h1>
                     <div className=" py-10 w-1/2 rounded-lg bg-gray-50  border flex flex-col justify-center items-center">
-                      <h1 className=" text-blue-500 [font-size:_clamp(1em,2vw,5em)] font-bold flex gap-3 items-center">
-                        <span className=" text-yellow-500">
-                          <FaStar />
-                        </span>{" "}
-                        5/5
-                      </h1>
-                      <p className="text-center text-xl font-bold">Excellent</p>
-                      <p className=" text-gray-600">(2 Reviews)</p>
+                      <div className=" flex-col text-blue-500 [font-size:_clamp(1em,2vw,5em)] font-bold flex gap-3 items-center">
+                        {data &&
+                          data.reviews.map((comment) => (
+                            <div className=" text-sm" key={comment._id}>
+                              <p>{comment.comment}</p>
+                              <p>{comment.ratings}</p>
+                              {/* <p>{console.log(comment)}</p> */}
+                            </div>
+                          ))}
+                      </div>
+                      {/* <p className="text-center text-xl font-bold">Excellent</p>
+                      <p className=" text-gray-600">(2 Reviews)</p> */}
                     </div>
                   </div>
+                  <div>
+                    <input className="border" type="text" name="" id="" />
+                  </div>
                 </div>
-                <div className="  col-span-12 lg:col-span-4">slam</div>
+
+                <div className="  col-span-12 lg:col-span-4">
+                  <MapStatic />
+                  <div className=" border my-8 py-8 rounded-md">
+                    <h5 className="  text-center w-6/12 mx-auto rounded-lg cursor-pointer  font-bold capitalize text-xl py-2  bg-blue-600 text-white ">
+                      Inquiry
+                    </h5>
+                    <ContactForm />
+                  </div>
+                </div>
               </div>
               <div className="">
                 {/* <div className="">

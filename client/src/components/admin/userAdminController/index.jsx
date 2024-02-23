@@ -3,12 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import Dashboard from "../Dashboard";
 import { UserContext } from "@/context/userContext";
 import axios from "axios";
+import ReactPaginate from "react-paginate";
 
 const UserAdminController = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const { token } = useContext(UserContext);
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const perPage = 5;
 
   async function gelAllUsers() {
     try {
@@ -25,6 +29,14 @@ const UserAdminController = () => {
     console.log("Token:", token);
     gelAllUsers();
   }, [token]);
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(user?.length / perPage));
+  }, [user, perPage]);
+
+  const startIndex = currentPage * perPage;
+  const endIndex = startIndex + perPage;
+  const subset = user?.slice(startIndex, endIndex) || [];
 
   async function userDelete(userId) {
     try {
@@ -99,8 +111,7 @@ const UserAdminController = () => {
                 {loading ? (
                   <p>loading...</p>
                 ) : (
-                  user &&
-                  user.map((item) => (
+                  subset.map((item) => (
                     <tr key={item._id}>
                       <td className="py-2 px-4 border border-gray-300">
                         {item._id}
@@ -131,6 +142,17 @@ const UserAdminController = () => {
                 )}
               </tbody>
             </table>
+            <div className="pagination">
+              <ReactPaginate
+                className="flex gap-4 py-8  mt-3  px-6"
+                breakLabel="..."
+                nextLabel=">"
+                onPageChange={(e) => setCurrentPage(e.selected)}
+                pageCount={totalPages}
+                previousLabel="< "
+                forcePage={currentPage}
+              />
+            </div>
           </div>
         </main>
       </div>

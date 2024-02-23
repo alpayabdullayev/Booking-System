@@ -59,7 +59,7 @@ const Profile = () => {
               className="bg-gray-100 rounded-lg p-4 mb-4 shadow-md"
             >
               <h3 className="text-lg font-semibold mb-2">
-                {bookingItem.room.name}
+                {bookingItem?.room?.name}
               </h3>
               <img
                 src={bookingItem.hotel.mainImage}
@@ -76,7 +76,7 @@ const Profile = () => {
                 Total Price: ${bookingItem.total_price}
               </p>
               <p className="text-sm text-gray-500 mb-1">
-                Hotel: {bookingItem.hotel.name}
+                Hotel: {bookingItem?.hotel?.name}
               </p>
               <p className="text-sm capitalize text-gray-500 mb-1">
                 City: {bookingItem.hotel.city}

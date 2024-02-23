@@ -19,11 +19,10 @@ const Home = () => {
         <Banner />
         <TopDestinations />
         <GetAll />
-        <WishlistSection />
         <Type />
         <HorizontalSection />
         <Featured />
-        <Stripe />
+        {/* <Stripe /> */}
         <Sub />
       </main>
     </>

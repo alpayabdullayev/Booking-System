@@ -27,6 +27,19 @@ import CreateHotel from "./components/admin/createHotel";
 import Register from "./pages/register";
 import Verify from "./pages/verify";
 import CreateHotelForm from "./components/admin/createHotelAdmin";
+import CreateHotelForm2 from "./components/createHotel3";
+import Wishlist from "./pages/wishlist";
+// import UpdateHotel from "./components/admin/updateHotel";
+import UpdateHotelForm from "./components/admin/updateHotel";
+import UpdateHotel2 from "./components/admin/updateHotel2";
+import RoomsController from "./components/admin/roomsController";
+import CreateRoom from "./components/admin/createRoom";
+import UpdateRoom from "./components/admin/updateRoom";
+import BookAdminController from "./components/admin/bookingAdminController";
+import UpdateBooking from "./components/admin/updateBooking";
+import FaqAdminController from "./components/admin/faqAdminController";
+import CreateFaq from "./components/admin/createFaq";
+import CheckOut from "./pages/checkout";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -59,8 +72,9 @@ function App() {
               <Route path="/destination" element={<Destination />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/Verified" element={<Verify/>}/>
+              <Route path="/Verified" element={<Verify />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/checkout" element={<CheckOut />} />
               <Route path="*" element={<NotFound />} />
 
               <Route
@@ -69,15 +83,33 @@ function App() {
                 }
               >
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/wishlist" element={<Wishlist />} />
               </Route>
             </Route>
             <Route element={<PrivateRoot roles={["admin", "superAdmin"]} />}>
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/users" element={<UserAdminController />} />
               <Route path="/admin/hotel" element={<HotelsAdminController />} />
+              <Route path="/admin/book" element={<BookAdminController />} />
+              <Route path="/admin/room" element={<RoomsController />} />
+              <Route path="/admin/faq" element={<FaqAdminController />} />
               <Route path="/admin/users/:id/update" element={<UpdateUser />} />
+              <Route path="/admin/room/:id/update" element={<UpdateRoom />} />
+              <Route
+                path="/admin/book/:id/update"
+                element={<UpdateBooking />}
+              />
+              <Route
+                path="/admin/hotel/:id/update"
+                element={<UpdateHotelForm />}
+              />
               <Route path="/admin/users/create" element={<CreateUsers />} />
-              <Route path="/admin/hotel/create" element={<CreateHotelForm />} />
+              <Route path="/admin/room/create" element={<CreateRoom />} />
+              <Route path="/admin/faq/create" element={<CreateFaq />} />
+              <Route
+                path="/admin/hotel/create"
+                element={<CreateHotelForm2 />}
+              />
             </Route>
           </Routes>
         )}

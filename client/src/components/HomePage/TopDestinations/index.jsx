@@ -23,7 +23,7 @@ const TopDestinations = () => {
   async function getAll() {
     try {
       const res = await axios.get(
-        "http://localhost:8000/api/countByCity/?cities=berlin,baku,gence"
+        "http://localhost:8000/api/countByCity/?cities=berlin,baku,gence,london,california"
       );
       setdata(res.data);
       setIsLoading(false);
@@ -40,7 +40,7 @@ const TopDestinations = () => {
   const breakpoints = {
     968: {
       spaceBetween: 30,
-      slidesPerView: 6,
+      slidesPerView: 5,
     },
     640: {
       spaceBetween: 20,
@@ -98,9 +98,9 @@ const TopDestinations = () => {
                   <div className="text-center flex flex-col gap-3 items-center justify-center">
                     <div className="">
                       <img
-                        src="https://modtour.travelerwp.com/wp-content/uploads/2022/04/New-Jersey-400x400.jpg"
+                        src="https://res.cloudinary.com/dfmannche/image/upload/v1708709284/mnjs4nswepn5dntnvk5w.jpg"
                         alt=""
-                        className=" rounded-full w-full"
+                        className=" rounded-full w-full "
                       />
                     </div>
                     <div className="flex justify-center items-center flex-col gap-1">
@@ -117,7 +117,7 @@ const TopDestinations = () => {
                   <div className="text-center flex flex-col gap-3 items-center justify-center">
                     <div className="">
                       <img
-                        src="https://modtour.travelerwp.com/wp-content/uploads/2022/04/New-Jersey-400x400.jpg"
+                        src="https://modtel.travelerwp.com/wp-content/uploads/2022/04/Nevada_-400x400.jpg"
                         alt=""
                         className=" rounded-full w-full"
                       />
@@ -136,17 +136,17 @@ const TopDestinations = () => {
                   <div className="text-center flex flex-col gap-3 items-center justify-center">
                     <div className="">
                       <img
-                        src="https://modtour.travelerwp.com/wp-content/uploads/2022/04/New-Jersey-400x400.jpg"
+                        src="https://modtel.travelerwp.com/wp-content/uploads/2022/04/Virginia-400x400.jpg"
                         alt=""
                         className=" rounded-full w-full"
                       />
                     </div>
                     <div className="flex justify-center items-center flex-col gap-1">
                       <h1 className="font-bold  hover:text-blue-600 duration-300 cursor-pointer text-lg">
-                        New Jersey
+                        London
                       </h1>
                       <p className=" cursor-pointer hover:text-blue-600 duration-200 font-semibold  text-gray-600">
-                        23 Hotels
+                        {data[3]} Hotels
                       </p>
                     </div>
                   </div>
@@ -155,17 +155,17 @@ const TopDestinations = () => {
                   <div className="text-center flex flex-col gap-3 items-center justify-center">
                     <div className="">
                       <img
-                        src="https://modtour.travelerwp.com/wp-content/uploads/2022/04/New-Jersey-400x400.jpg"
+                        src="https://modtel.travelerwp.com/wp-content/uploads/2022/04/Los-Angeles-400x400.jpg"
                         alt=""
                         className=" rounded-full w-full"
                       />
                     </div>
                     <div className="flex justify-center items-center flex-col gap-1">
                       <h1 className="font-bold  hover:text-blue-600 duration-300 cursor-pointer text-lg">
-                        New Jersey
+                        California
                       </h1>
                       <p className=" cursor-pointer hover:text-blue-600 duration-200 font-semibold  text-gray-600">
-                        23 Hotels
+                        {data[4]} Hotels
                       </p>
                     </div>
                   </div>
@@ -174,7 +174,7 @@ const TopDestinations = () => {
                   <div className="text-center flex flex-col gap-3 items-center justify-center">
                     <div className="">
                       <img
-                        src="https://modtour.travelerwp.com/wp-content/uploads/2022/04/New-Jersey-400x400.jpg"
+                        src="https://modtel.travelerwp.com/wp-content/uploads/2022/04/New-York-City-400x400.jpg"
                         alt=""
                         className=" rounded-full w-full"
                       />
@@ -184,26 +184,7 @@ const TopDestinations = () => {
                         New Jersey
                       </h1>
                       <p className=" cursor-pointer hover:text-blue-600 duration-200 font-semibold  text-gray-600">
-                        23 Hotels
-                      </p>
-                    </div>
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                  <div className="text-center flex flex-col gap-3 items-center justify-center">
-                    <div className="">
-                      <img
-                        src="https://modtour.travelerwp.com/wp-content/uploads/2022/04/New-Jersey-400x400.jpg"
-                        alt=""
-                        className=" rounded-full w-full"
-                      />
-                    </div>
-                    <div className="flex justify-center items-center flex-col gap-1">
-                      <h1 className="font-bold  hover:text-blue-600 duration-300 cursor-pointer text-lg">
-                        New Jersey
-                      </h1>
-                      <p className=" cursor-pointer hover:text-blue-600 duration-200 font-semibold  text-gray-600">
-                        23 Hotels
+                        2 Hotels
                       </p>
                     </div>
                   </div>

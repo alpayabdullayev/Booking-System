@@ -89,7 +89,10 @@ export const deleteHotel = async (req, res, next) => {
 export const getHotelById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const hotel = await Hotel.findById(id).populate("type").populate("rooms")
+    const hotel = await Hotel.findById(id)
+      .populate("type")
+      .populate("rooms")
+      .populate("reviews");
     res.status(200).json(hotel);
   } catch (err) {
     next(err);
@@ -98,7 +101,7 @@ export const getHotelById = async (req, res, next) => {
 
 export const getAllHotels = async (req, res, next) => {
   try {
-    const hotels = await Hotel.find({}).populate("type").populate("rooms")
+    const hotels = await Hotel.find({}).populate("type").populate("rooms");
     res.status(200).json(hotels);
   } catch (err) {
     next(err);
@@ -206,7 +209,7 @@ export const getHotelRooms = async (req, res, next) => {
         return Room.findById(room);
       })
     );
-    res.status(200).json(list)
+    res.status(200).json(list);
   } catch (err) {
     next(err);
   }
@@ -230,7 +233,9 @@ export const getHotels = async (req, res, next) => {
     const hotels = await Hotel.find({
       ...others,
       cheapestPrice: { $gt: min | 1, $lt: max || 999 },
-    }).populate("type").limit(limit);
+    })
+      .populate("type")
+      .limit(limit);
 
     res.status(200).json(hotels);
   } catch (err) {
@@ -238,4 +243,25 @@ export const getHotels = async (req, res, next) => {
   }
 };
 
+export const addComment = async (req, res, next) => {
+  try {
+    const { hotelId, userId, rating, comment } = req.body;
 
+    const hotel = await Hotel.findById(hotelId);
+
+    if (!hotel) {
+      return res.status(404).json({ error: "Hotel not found" });
+    }
+
+    hotel.reviews.push({ user: userId, ratings: rating, comment: comment });
+
+    if (rating > 5) {
+      res.status(400).json({ message: "5den yuxari olmaz" });
+    }
+    await hotel.save();
+
+    res.status(201).json({ message: "Comment added successfully", hotel });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -16,36 +16,43 @@ const GlobalProvider = ({ children }) => {
   const [products, setProducts] = useState(null);
   // const navigate = useNavigate();
 
+  const [bookingData, setBookingData] = useState(null);
+
+  const saveBookingData = (data) => {
+    setBookingData(data);
+  };
+
   async function handleAddToWishlist(hotelId) {
     try {
       if (!token) {
-        console.log("Token yoxdu");
-        // navigate("/login");
-
+        console.log("Token yok");
         return;
       }
 
       const decodedToken = jwtDecode(token);
-      console.log("decodedToken", decodedToken);
       const userId = decodedToken.userId;
 
       const response = await axios.post(
         `http://localhost:8000/api/users/${userId}/wishlist`,
-        {
-          hotelId: hotelId,
-        },
+        { hotelId: hotelId },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      toast.success("Successfully");
 
-      console.log("Wishlist updated:", response.data);
-      setWishlist(response.data.user.wishlist);
+      if (!response.data || !response.data.user) {
+        throw new Error("Wishlist bilgileri alınamadı.");
+      }
+
+      toast.success("Başarılı");
+
+      console.log("Wishlist güncellendi:", response.data);
+      setWishlist(response.data.user.wishlist || []); // Null kontrolü yapıldı
     } catch (error) {
-      console.error("Error updating wishlist:", error.message);
+      console.error("Wishlist güncellenirken hata oluştu:", error.message);
+      setError(error.message);
     }
   }
 
@@ -68,7 +75,13 @@ const GlobalProvider = ({ children }) => {
     // }
   }
 
-  const data = { handleAddToWishlist, fetchWishlist, wishlist };
+  const data = {
+    handleAddToWishlist,
+    bookingData,
+    saveBookingData,
+    fetchWishlist,
+    wishlist,
+  };
   return (
     <>
       <GlobalContext.Provider value={data}>{children}</GlobalContext.Provider>

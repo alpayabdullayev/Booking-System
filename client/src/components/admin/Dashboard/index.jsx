@@ -10,7 +10,7 @@ import {
 import { Link, NavLink } from "react-router-dom";
 import { MdOutlineMeetingRoom } from "react-icons/md";
 import { CiSettings } from "react-icons/ci";
-
+import { FaQuestion } from "react-icons/fa";
 const Dashboard = () => {
   return (
     <>
@@ -30,7 +30,7 @@ const Dashboard = () => {
         </ul>
         <div className="py-6">
           <span className=" px-8 text-gray-500 text-sm">Components</span>
-          <ul className="text-black flex flex-col gap-1 pt-2  px-10 ">
+          <ul className="text-black flex flex-col gap-2 pt-2  px-10 ">
             <li className="flex items-center gap-2">
               <span className="text-sm text-gray-400">
                 <FaUser />
@@ -51,13 +51,25 @@ const Dashboard = () => {
               <span className="text-sm text-gray-400">
                 <MdOutlineMeetingRoom />
               </span>{" "}
-              <Link className=" font-bold">Rooms</Link>
+              <Link to={"/admin/room"} className=" font-bold">
+                Rooms
+              </Link>
             </li>
             <li className="flex items-center gap-1">
               <span className="text-sm text-gray-400">
                 <FaRegCalendar />
               </span>{" "}
-              <Link className=" font-bold">Bookings</Link>
+              <Link to={"/admin/book"} className=" font-bold">
+                Bookings
+              </Link>
+            </li>
+            <li className="flex items-center gap-1">
+              <span className=" text-sm text-gray-400">
+                <FaQuestion />
+              </span>{" "}
+              <Link to={"/admin/faq"} className=" font-bold">
+                FAQ
+              </Link>
             </li>
             <li className="flex items-center gap-1">
               <span className=" text-sm text-gray-400">

@@ -123,9 +123,9 @@ const createBooking = async (req, res) => {
     user.bookings.push(newBooking);
     await user.save();
 
-    res.status(201).json(newBooking);
+    return res.status(201).json(newBooking);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -136,6 +136,43 @@ export const getAllBookings = async (req, res) => {
       .populate("hotel")
       .populate("user");
     res.status(200).json(bookings);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const getBookingById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const booking = await Booking.findById(id)
+      .populate("room")
+      .populate("hotel")
+      .populate("user");
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+    res.status(200).json(booking);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const updateBookingStatus = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+    const newStatus = req.body.status;
+
+    const booking = await Booking.findByIdAndUpdate(
+      bookingId,
+      { status: newStatus },
+      { new: true }
+    );
+
+    if (!booking) {
+      return res.status(404).json({ message: "Rezervasyon bulunamadı." });
+    }
+
+    res.status(200).json(booking);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

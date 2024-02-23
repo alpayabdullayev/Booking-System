@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import {
   FaBars,
+  FaHeart,
   FaUser,
   FaUserAlt,
   FaUserAstronaut,
@@ -32,6 +33,7 @@ import {
 import { UserContext } from "@/context/userContext";
 import "./index.scss";
 import { useTranslation } from "react-i18next";
+import { CiHeart } from "react-icons/ci";
 
 const Navbar = () => {
   const { user, setUser, role, setRole, setToken } = useContext(UserContext);
@@ -156,16 +158,20 @@ const Navbar = () => {
                   </ul>
                 </div>
               </div>
-              <div className="w-10 h-10  relative text-lg rounded-full  shadow-md border flex  justify-center items-center">
-                <span className=" relative">
-                  <FaShoppingBasket />
-                </span>
-              </div>
-              <div className="relative">
+
+              <Link to={"/wishlist"}>
+                <div className="w-10 h-10  relative text-lg rounded-full  shadow-md border flex  justify-center items-center">
+                  <span className=" font-bold text-xl relative">
+                    <CiHeart />
+                  </span>
+                </div>
+              </Link>
+
+              {/* <div className="relative">
                 <span className="absolute  bottom-2 right-2 text-[10px] bg-orange-500 rounded-full w-5 h-5  text-white flex justify-center items-center">
                   1
                 </span>
-              </div>
+              </div> */}
 
               <DropdownMenu>
                 <DropdownMenuTrigger>
@@ -194,7 +200,7 @@ const Navbar = () => {
                     ) : (
                       <>
                         <p>
-                          <NavLink to={"/login"}>Login</NavLink>
+                          <NavLink to={"/login"}>Settings</NavLink>
                         </p>
                       </>
                     )}
