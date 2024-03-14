@@ -237,8 +237,8 @@ const UpdateHotel2 = ({ hotelId }) => {
       </label>
       <h2>Rooms</h2>
       {hotelData.rooms &&
-        hotelData.rooms.map((room, index) => (
-          <div key={index}>
+        hotelData.rooms.map((room) => (
+          <div key={room._id}>
             <input
               className="border"
               type="text"

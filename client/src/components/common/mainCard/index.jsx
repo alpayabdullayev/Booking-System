@@ -42,7 +42,7 @@ const MainCard = ({ item }) => {
                     <FaHeart />
                   </span>
                 ) : (
-                  <span className="">
+                  <span className=" text-white">
                     <FaHeart />
                   </span>
                 )}

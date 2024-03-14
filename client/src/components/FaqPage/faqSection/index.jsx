@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import SectionTitle from "@/components/common/sectionTitle";
 import axios from "axios";
+import { HashLoader } from "react-spinners";
 
 const FAQacc = () => {
   const [data, setData] = useState([]);
@@ -38,7 +39,9 @@ const FAQacc = () => {
               className="w-full grid grid-cols-1 md:grid-cols-2 gap-4"
             >
               {isLoading ? (
-                <p>Loading...</p>
+                <div className="flex justify-center w-full  items-center ">
+                  <HashLoader color="#183ee7" />
+                </div>
               ) : (
                 data.map((item, index) => (
                   <AccordionItem key={index} value={`item-${index}`}>

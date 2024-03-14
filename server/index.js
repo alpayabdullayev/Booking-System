@@ -6,6 +6,9 @@ import cookieParser from "cookie-parser";
 import cloudinary from "cloudinary";
 import bodyParser from "body-parser";
 import Stripe from "stripe";
+import http from "http";
+import { Server } from "socket.io";
+
 import { AuthRouter } from "./src/routes/authRoutes.js";
 import { HotelRouter } from "./src/routes/hotelsRoutes.js";
 import { UserRouter } from "./src/routes/userRouter.js";
@@ -14,13 +17,20 @@ import { HotelTypeRouter } from "./src/routes/hotelTypeRoutes.js";
 import { DestinationSliderRouter } from "./src/routes/destinationSliderRoutes.js";
 import { BookingRouter } from "./src/routes/bookingRoutes.js";
 import { FaqRouter } from "./src/routes/faqRoutes.js";
+import { BlogRoutes } from "./src/routes/blogsRoutes.js";
+
 const app = express();
+// const server = http.createServer(app);
+// const io = new Server(server);
+
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 dotenv.config();
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -64,6 +74,7 @@ app.use("/api", RoomRouter);
 app.use("/api", DestinationSliderRouter);
 app.use("/api", BookingRouter);
 app.use("/api", FaqRouter);
+app.use("/api", BlogRoutes);
 
 console.log("Cloudinary Config:", cloudinary.config());
 console.log("Cloudinary API Key:", process.env.CLOUDINARY_API_KEY);
@@ -85,6 +96,20 @@ app.use((err, req, res, next) => {
     stack: err.stack,
   });
 });
+
+// io.on("connection", (socket) => {
+//   console.log("a user connected", socket.id);
+//   socket.on("comment", (msg) => {
+//     console.log("new comment received", msg);
+//     io.emit("new-comment", msg);
+//   });
+// });
+
+// export { io };
+
+// server.listen(PORT, () => {
+//   console.log("PORT çalışıyor...");
+// });
 
 app.listen(PORT, () => {
   console.log(`SERVER Connection on PORT ${PORT}`);

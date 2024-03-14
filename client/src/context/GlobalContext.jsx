@@ -46,10 +46,10 @@ const GlobalProvider = ({ children }) => {
         throw new Error("Wishlist bilgileri alınamadı.");
       }
 
-      toast.success("Başarılı");
+      toast.success("Successful");
 
       console.log("Wishlist güncellendi:", response.data);
-      setWishlist(response.data.user.wishlist || []); // Null kontrolü yapıldı
+      setWishlist([...wishlist,{...response.data.user.wishlist}])
     } catch (error) {
       console.error("Wishlist güncellenirken hata oluştu:", error.message);
       setError(error.message);
@@ -60,7 +60,6 @@ const GlobalProvider = ({ children }) => {
     try {
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.userId;
-      // console.log("userId : ", userId);
       const res = await axios.get(`http://localhost:8000/api/user/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -68,11 +67,8 @@ const GlobalProvider = ({ children }) => {
       });
       setWishlist(res.data.wishlist);
     } catch (error) {
-      setError("Error fetching products: " + error.message);
+      setError("Error fetching wishlist: " + error.message);
     }
-    // finally {
-    //   setLoading(false);
-    // }
   }
 
   const data = {
@@ -81,6 +77,7 @@ const GlobalProvider = ({ children }) => {
     saveBookingData,
     fetchWishlist,
     wishlist,
+    setWishlist
   };
   return (
     <>

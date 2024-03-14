@@ -40,8 +40,16 @@ import UpdateBooking from "./components/admin/updateBooking";
 import FaqAdminController from "./components/admin/faqAdminController";
 import CreateFaq from "./components/admin/createFaq";
 import CheckOut from "./pages/checkout";
+import HotelsUpdate from "./components/admin/HotelsUpdate";
+import BookingDetail from "./pages/bookingDetail";
+import ScrollToTop from "./components/common/ScrollToTop";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+import BlogPage from "./pages/blog";
+import CreateBlog from "./pages/CreateBlogSection";
+import BlogDetail from "./pages/BlogDetail";
 
 function App() {
+  const helmetContext = {};
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -53,67 +61,87 @@ function App() {
   }, []);
   return (
     <>
-      <BrowserRouter>
-        {loading ? (
-          <div className="flex justify-center items-center h-[100vh]">
-            <HashLoader color="#183ee7" />
-          </div>
-        ) : (
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Home />} />
-              <Route path="/types/:typeId" element={<TypeDetail />} />
-              <Route path="/hotels" element={<List />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/hotelDetail/:id" element={<HotelDetail />} />
-              <Route path="/expert" element={<BecomeLocalExpert />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/listing" element={<Listing />} />
-              <Route path="/destination" element={<Destination />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/Verified" element={<Verify />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/checkout" element={<CheckOut />} />
-              <Route path="*" element={<NotFound />} />
+      <HelmetProvider context={helmetContext}>
+        <BrowserRouter>
+          <ScrollToTop />
+          {loading ? (
+            <div className="flex justify-center items-center h-[100vh]">
+              <HashLoader color="#183ee7" />
+            </div>
+          ) : (
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="/types/:typeId" element={<TypeDetail />} />
+                <Route path="/hotels" element={<List />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/hotelDetail/:id" element={<HotelDetail />} />
+                <Route path="/expert" element={<BecomeLocalExpert />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/listing" element={<Listing />} />
+                <Route path="/blogs" element={<BlogPage />} />
+                <Route path="/blogs/:id" element={<BlogDetail />} />
+                <Route path="/destination" element={<Destination />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/Verified" element={<Verify />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/checkout" element={<CheckOut />} />
+                <Route path="*" element={<NotFound />} />
 
+                <Route
+                  element={
+                    <PrivateRoot roles={["user", "admin", "superAdmin"]} />
+                  }
+                >
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/wishlist" element={<Wishlist />} />
+                  <Route path="/book/:id" element={<BookingDetail />} />
+                  <Route path="/createblog" element={<CreateBlog />} />
+                </Route>
+              </Route>
+              <Route element={<PrivateRoot roles={["admin", "superAdmin"]} />}>
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin/users" element={<UserAdminController />} />
+                <Route
+                  path="/admin/hotel"
+                  element={<HotelsAdminController />}
+                />
+                <Route path="/admin/book" element={<BookAdminController />} />
+                <Route path="/admin/room" element={<RoomsController />} />
+                <Route path="/admin/faq" element={<FaqAdminController />} />
+                <Route
+                  path="/admin/users/:id/update"
+                  element={<UpdateUser />}
+                />
+                <Route path="/admin/room/:id/update" element={<UpdateRoom />} />
+                <Route
+                  path="/admin/book/:id/update"
+                  element={<UpdateBooking />}
+                />
+                <Route
+                  path="/admin/hotel/:id/update"
+                  element={<HotelsUpdate />}
+                />
+                <Route path="/admin/users/create" element={<CreateUsers />} />
+                <Route path="/admin/room/create" element={<CreateRoom />} />
+                <Route path="/admin/faq/create" element={<CreateFaq />} />
+                <Route
+                  path="/admin/hotel/create"
+                  element={<CreateHotelForm2 />}
+                />
+              </Route>
               <Route
                 element={
                   <PrivateRoot roles={["user", "admin", "superAdmin"]} />
                 }
               >
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/wishlist" element={<Wishlist />} />
+                <Route path="/book/:id" element={<BookingDetail />} />
               </Route>
-            </Route>
-            <Route element={<PrivateRoot roles={["admin", "superAdmin"]} />}>
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/users" element={<UserAdminController />} />
-              <Route path="/admin/hotel" element={<HotelsAdminController />} />
-              <Route path="/admin/book" element={<BookAdminController />} />
-              <Route path="/admin/room" element={<RoomsController />} />
-              <Route path="/admin/faq" element={<FaqAdminController />} />
-              <Route path="/admin/users/:id/update" element={<UpdateUser />} />
-              <Route path="/admin/room/:id/update" element={<UpdateRoom />} />
-              <Route
-                path="/admin/book/:id/update"
-                element={<UpdateBooking />}
-              />
-              <Route
-                path="/admin/hotel/:id/update"
-                element={<UpdateHotelForm />}
-              />
-              <Route path="/admin/users/create" element={<CreateUsers />} />
-              <Route path="/admin/room/create" element={<CreateRoom />} />
-              <Route path="/admin/faq/create" element={<CreateFaq />} />
-              <Route
-                path="/admin/hotel/create"
-                element={<CreateHotelForm2 />}
-              />
-            </Route>
-          </Routes>
-        )}
-      </BrowserRouter>
+            </Routes>
+          )}
+        </BrowserRouter>
+      </HelmetProvider>
     </>
   );
 }

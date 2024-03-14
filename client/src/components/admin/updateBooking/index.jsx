@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Dashboard from "../Dashboard";
+import toast from "react-hot-toast";
 
 const UpdateBooking = () => {
   const { id } = useParams();
@@ -39,10 +40,10 @@ const UpdateBooking = () => {
       await axios.put(`http://localhost:8000/api/book/${id}/status`, {
         status: book.status,
       });
-      alert("Booking başarıyla güncellendi!");
+      toast.success("Booking başarıyla güncellendi!");
     } catch (error) {
       console.error("Booking güncelleme hatası:", error);
-      alert("Booking güncelleme sırasında bir hata oluştu!");
+      toast.error("Booking güncelleme sırasında bir hata oluştu!");
     }
   };
   return (

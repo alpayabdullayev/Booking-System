@@ -60,14 +60,11 @@ const HotelSchema = new Schema(
       {
         user: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "UsersHotel",
+          ref: "UserBooking",
           required: true,
         },
-        ratings: { type: Number, min: 1, max: 5 },
-        comment: {
-          type: String,
-          required: true,
-        },
+        text: String,
+        created: { type: Date, default: Date.now },
       },
     ],
     mapAdress: { type: String },

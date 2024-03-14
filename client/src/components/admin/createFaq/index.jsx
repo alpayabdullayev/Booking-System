@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Dashboard from "../Dashboard";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const CreateFaq = () => {
   const [faqData, setFaqData] = useState({
@@ -17,10 +18,10 @@ const CreateFaq = () => {
     e.preventDefault();
     try {
       await axios.post("http://localhost:8000/api/faq/", faqData);
-      alert("FAQ başarıyla oluşturuldu!");
+      toast.success("FAQ created successfully!")
     } catch (error) {
-      console.error("FAQ oluşturma hatası:", error);
-      alert("FAQ oluşturma sırasında bir hata oluştu!");
+      console.error("FAQ error:", error);
+      toast.error("An error occurred while creating the FAQ!")
     }
   };
 

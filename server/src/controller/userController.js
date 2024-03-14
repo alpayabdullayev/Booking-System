@@ -1,5 +1,7 @@
 import User from "../models/userModels.js";
 import bcrypt from "bcrypt";
+import cloudinary from "cloudinary";
+
 
 export const createUser = async (req, res) => {
   try {
@@ -31,9 +33,26 @@ export const updateUser = async (req, res, next) => {
       req.body.password = bcrypt.hashSync(req.body.password, salt);
     }
 
+    
+    let avatarResult;
+    if (req.files && req.files.avatar && req.files.avatar[0]) {
+      avatarResult = await cloudinary.uploader.upload(
+        req.files.avatar[0].path
+      );
+    }
+
+    const updateData = {
+      ...req.body,
+    };
+
+    
+    if (avatarResult) {
+      updateData.avatar = avatarResult.secure_url;
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { $set: req.body },
+      { $set: updateData },
       { new: true }
     );
 
@@ -66,7 +85,10 @@ export const getUserById = async (req, res) => {
       .populate({
         path: "bookings",
         populate: [{ path: "room" }, { path: "hotel" }, { path: "user" }],
-      });
+      }).populate({
+        path: "blogs",
+        populate: { path: "user" },
+      })
     if (!user) {
       return res.status(404).json({ message: "Not Found" });
     }
@@ -77,7 +99,7 @@ export const getUserById = async (req, res) => {
 };
 export const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find().populate("wishlist.hotel");
+    const users = await User.find().populate("wishlist.hotel").populate("blogs")
     res.status(200).json(users);
   } catch (err) {
     next(err);
@@ -114,5 +136,59 @@ export const addToWishlist = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+
+// export const updateUserAvatar = async (req, res) => {
+
+
+
+//   const { id } = req.params;
+//   const { avatar } = req.body;
+
+//   try {
+//     const user = await UserBooking.findByIdAndUpdate(
+//       id,
+//       { avatar },
+//       { new: true }
+//     );
+
+//     if (!user) {
+//       return res.status(404).json({ message: "Kullanıcı bulunamadı" });
+//     }
+
+//     return res.status(200).json(user);
+//   } catch (error) {
+//     console.error("Avatar güncelleme hatası:", error);
+//     return res.status(500).json({ message: "Sunucu Hatası" });
+//   }
+// };
+
+export const updateAvatar = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    let avatarResult;
+    if (req.file && req.file.avatar) {
+      avatarResult = await cloudinary.uploader.upload(
+        req.file.avatar.path
+      );
+    }
+
+    const updateData = {};
+    if (avatarResult) {
+      updateData.avatar = avatarResult.secure_url;
+    }
+
+    const updateUser = await User.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true }
+    );
+
+    res.status(200).json(updateUser);
+  } catch (err) {
+    next(err);
   }
 };

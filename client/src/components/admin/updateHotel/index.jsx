@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const UpdateHotelForm = () => {
   const { id } = useParams();
@@ -66,7 +67,6 @@ const UpdateHotelForm = () => {
     setHotelData({ ...hotelData, images: e.target.files });
   };
 
-  // handleRoomSelection fonksiyonunu güncelleyin
   const handleRoomSelection = (e) => {
     const roomId = e.target.value;
     const isChecked = e.target.checked;
@@ -92,33 +92,34 @@ const UpdateHotelForm = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      for (let key in hotelData) {
-        if (key === "images") {
-          for (let i = 0; i < hotelData.images.length; i++) {
-            formData.append("images", hotelData.images[i]);
-          }
-        } else if (key === "rooms") {
-          hotelData.rooms.forEach((roomId) => {
-            formData.append("rooms", roomId);
-          });
-        } else {
-          formData.append(key, hotelData[key]);
-        }
-      }
-      console.log(formData, "sadfgh");
-      // await axios.put(
-      //   `http://localhost:8000/api/hotels/${hotelData._id}`,
-      //   formData,
-      //   {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //     },
+      formData.append()
+      // for (let key in hotelData) {
+      //   if (key === "images") {
+      //     for (let i = 0; i < hotelData.images.length; i++) {
+      //       formData.append("images", hotelData.images[i]);
+      //     }
+      //   } else if (key === "rooms") {
+      //     hotelData.rooms.forEach((roomId) => {
+      //       formData.append("rooms", roomId);
+      //     });
+      //   } else {
+      //     formData.append(key, hotelData[key]);
       //   }
-      // );
-      alert("Otel başarıyla güncellendi!");
+      // }
+
+      await axios.put(
+        `http://localhost:8000/api/hotels/${hotelData._id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      toast.success("The hotel has been updated successfully!");
     } catch (error) {
       console.error("Otel güncelleme hatası:", error);
-      alert("Otel güncelleme sırasında bir hata oluştu!");
+      toast.error("The Hotel error ");
     }
   };
 

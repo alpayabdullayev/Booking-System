@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Dashboard from "../admin/Dashboard";
+import toast from "react-hot-toast";
 
 const CreateHotelForm2 = () => {
   const [data, setData] = useState([]);
@@ -71,164 +73,173 @@ const CreateHotelForm2 = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      alert("Otel başarıyla oluşturuldu!");
+      toast.success("The hotel has been created successfully!");
     } catch (error) {
       console.error("Otel oluşturma hatası:", error);
-      alert("Otel oluşturma sırasında bir hata oluştu!");
+      toast.error("An error occurred while creating the hotel!");
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Otel Oluştur</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Otel Adı:</label>
-          <input
-            className="border w-full p-2"
-            type="text"
-            name="name"
-            value={hotelData.name}
-            onChange={handleInputChange}
-          />
+    <>
+      <Dashboard />
+      <div class="flex justify-center">
+        <div className=" w-2/12"></div>{" "}
+        <div class="w-10/12">
+          <div class="bg-gray-100 p-10 rounded-lg shadow-md">
+            <h2 class="text-3xl font-bold mb-8 text-center">Hotel Oluştur</h2>
+            <form onSubmit={handleSubmit} class="space-y-6">
+              <div>
+                <label class="block text-sm font-semibold">Hotel Adı:</label>
+                <input
+                  class="border rounded w-full py-2 px-3"
+                  type="text"
+                  name="name"
+                  value={hotelData.name}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold">
+                  Cheapest Price:
+                </label>
+                <input
+                  class="border rounded w-full py-2 px-3"
+                  type="text"
+                  name="cheapestPrice"
+                  value={hotelData.cheapestPrice}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold">Otel Tipi:</label>
+                <select
+                  class="border rounded w-full py-2 px-3"
+                  name="type"
+                  value={hotelData.type}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Select a type...</option>
+                  {data.map((type) => (
+                    <option key={type._id} value={type._id}>
+                      {type.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold">Şehir:</label>
+                <input
+                  class="border rounded w-full py-2 px-3"
+                  type="text"
+                  name="city"
+                  value={hotelData.city}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold">Adres:</label>
+                <input
+                  class="border rounded w-full py-2 px-3"
+                  type="text"
+                  name="address"
+                  value={hotelData.address}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold">Rooms:</label>
+                <input
+                  class="border rounded w-full py-2 px-3"
+                  type="text"
+                  name="rooms"
+                  value={hotelData.rooms}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold">Uzaklık:</label>
+                <input
+                  class="border rounded w-full py-2 px-3"
+                  type="text"
+                  name="distance"
+                  value={hotelData.distance}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold">Başlık:</label>
+                <input
+                  class="border rounded w-full py-2 px-3"
+                  type="text"
+                  name="title"
+                  value={hotelData.title}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold">Açıklama:</label>
+                <textarea
+                  class="border rounded w-full py-2 px-3"
+                  name="desc"
+                  value={hotelData.desc}
+                  onChange={handleInputChange}
+                ></textarea>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold">
+                  Derecelendirme:
+                </label>
+                <input
+                  class="border rounded w-full py-2 px-3"
+                  type="number"
+                  name="rating"
+                  value={hotelData.rating}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold">Ulduz:</label>
+                <input
+                  class="border rounded w-full py-2 px-3"
+                  type="number"
+                  name="hotelStars"
+                  value={hotelData.hotelStars}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold">Ana Resim:</label>
+                <input
+                  class="border"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleMainImageChange}
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold">Ek Resimler:</label>
+                <input
+                  class="border"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImagesChange}
+                />
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded inline-block"
+                >
+                  Otel Oluştur
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">
-            Cheapest Price:
-          </label>
-          <input
-            className="border w-full p-2"
-            type="text"
-            name="cheapestPrice"
-            value={hotelData.cheapestPrice}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Otel Tipi:</label>
-          <select
-            className="border w-full p-2"
-            type="text"
-            name="type"
-            value={hotelData.type}
-            onChange={handleInputChange}
-          >
-            <option value="">Select a type...</option>
-            {data.map((type) => (
-              <option key={type._id} value={type._id}>
-                {type.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Şehir:</label>
-          <input
-            className="border w-full p-2"
-            type="text"
-            name="city"
-            value={hotelData.city}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Adres:</label>
-          <input
-            className="border w-full p-2"
-            type="text"
-            name="address"
-            value={hotelData.address}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Rooms:</label>
-          <input
-            className="border w-full p-2"
-            type="text"
-            name="rooms"
-            value={hotelData.rooms}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Uzaklık:</label>
-          <input
-            className="border w-full p-2"
-            type="text"
-            name="distance"
-            value={hotelData.distance}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Başlık:</label>
-          <input
-            className="border w-full p-2"
-            type="text"
-            name="title"
-            value={hotelData.title}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Açıklama:</label>
-          <textarea
-            className="border w-full p-2"
-            name="desc"
-            value={hotelData.desc}
-            onChange={handleInputChange}
-          ></textarea>
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">
-            Derecelendirme:
-          </label>
-          <input
-            className="border w-full p-2"
-            type="number"
-            name="rating"
-            value={hotelData.rating}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Yıldız:</label>
-          <input
-            className="border w-full p-2"
-            type="number"
-            name="hotelStars"
-            value={hotelData.hotelStars}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Ana Resim:</label>
-          <input
-            className="border"
-            type="file"
-            accept="image/*"
-            onChange={handleMainImageChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Ek Resimler:</label>
-          <input
-            className="border"
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImagesChange}
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Otel Oluştur
-        </button>
-      </form>
-    </div>
+      </div>
+    </>
   );
 };
 

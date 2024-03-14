@@ -92,7 +92,7 @@ const createBooking = async (req, res) => {
   if (bookingDate < today) {
     return res
       .status(401)
-      .json({ message: "Geçmiş bir tarihe rezervasyon yapılamaz." });
+      .json({ message: "Kecmis bir tarihe rezerv olmur." });
   }
 
   const booking = new Booking({
@@ -113,7 +113,7 @@ const createBooking = async (req, res) => {
 
     if (existingBooking) {
       return res.status(400).json({
-        message: "Bu oda belirtilen zaman aralığında zaten rezerve edilmiş.",
+        message: "Bu otaq zaman aralığında rezerve edilib.",
       });
     }
 

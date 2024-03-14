@@ -20,7 +20,7 @@ const ListingSection = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [search, setsearch] = useState("");
   const [hotelStars, sethotelStars] = useState([]);
-  const [priceRange, setPriceRange] = useState([400, 900]);
+  const [priceRange, setPriceRange] = useState([0, 900]);
 
   const handlePriceChange = (value) => {
     setPriceRange(value);
@@ -28,8 +28,9 @@ const ListingSection = () => {
 
   async function getAll() {
     try {
-      const res = await axios.get("http://localhost:8000/api/hotels");
+      const res = await axios.get("http://localhost:8000/api/hotels?limit=10");
       setData(res.data);
+      console.log(res.data);
       setIsLoading(false);
     } catch (error) {
       console.log(error.message);
@@ -150,9 +151,7 @@ const ListingSection = () => {
                           itemPrice <= priceRange[1]
                         );
                       })
-                      .map((item, index) => (
-                        <MainCard key={index} item={item} />
-                      ))
+                      .map((item) => <MainCard key={item?._id} item={item} />)
                   )}
                 </div>
               </div>

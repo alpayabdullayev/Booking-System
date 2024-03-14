@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { HashLoader } from "react-spinners";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -24,7 +25,9 @@ const Charti = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return               <div className="flex justify-center w-full  items-center ">
+    <HashLoader color="#183ee7" />
+  </div>
   }
 
   const cityCounts = {};

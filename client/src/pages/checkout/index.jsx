@@ -7,7 +7,7 @@ import { FaCcPaypal } from "react-icons/fa6";
 import Sub from "@/components/common/sub";
 
 const CheckOut = () => {
-  const { bookingData } = useContext(GlobalContext); // Получаем данные бронирования из контекста
+  const { bookingData } = useContext(GlobalContext); 
   const publishableKey =
     "pk_test_51OkuxcGezhrpHtHsTwcCLYYLOyRKuix2BxtNXLolGhkdJykXFX7ZUIdQzWfVxM9OMygZeFYYZgxlDULO4adgAWQY003r8valPM";
 
@@ -18,8 +18,7 @@ const CheckOut = () => {
       const paymentResponse = await axios.post(
         "http://localhost:8000/payment",
         {
-          amount: bookingData.total_price * 100, // Используем данные о стоимости из bookingData
-          // Добавьте любые другие необходимые данные для платежа
+          amount: bookingData.total_price * 100,
         }
       );
 

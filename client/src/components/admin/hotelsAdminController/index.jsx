@@ -5,6 +5,7 @@ import Dashboard from "../Dashboard";
 import axios from "axios";
 import { FaTrash } from "react-icons/fa";
 import { RxUpdate } from "react-icons/rx";
+import { HashLoader } from "react-spinners";
 
 const HotelsAdminController = () => {
   const [hotel, setHotel] = useState(null);
@@ -53,27 +54,7 @@ const HotelsAdminController = () => {
         <div className=" w-2/12"></div>
         <main className=" w-full min-h-screen bg-gray-200  px-20 ">
           <div className=" flex py-5 items-center justify-between flex-wrap">
-            <div className=" flex flex-wrap gap-4 py-5">
-              <div>
-                <button className=" py-2 rounded-md px-2 bg-blue-600 text-white">
-                  A-Z
-                </button>
-              </div>
-              <div>
-                <button className=" py-2 rounded-md px-2 bg-blue-600 text-white">
-                  Z-A
-                </button>
-              </div>
-              <div>
-                <input
-                  type="text"
-                  className=" py-2 px-2 border border-gray-300  rounded-md"
-                  name=""
-                  placeholder="Search..."
-                  id=""
-                />
-              </div>
-            </div>
+            <div className=" flex flex-wrap gap-4 py-5"></div>
             <div>
               <div>
                 <Link to={"/admin/hotel/create  "}>
@@ -100,7 +81,9 @@ const HotelsAdminController = () => {
               </thead>
               <tbody>
                 {loading ? (
-                  <p>loading...</p>
+                  <div className="flex justify-center w-full  items-center ">
+                    <HashLoader color="#183ee7" />
+                  </div>
                 ) : (
                   hotel &&
                   hotel.map((item) => (

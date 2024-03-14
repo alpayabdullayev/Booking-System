@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const { setUser, setRole, setToken, setuserId } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -28,9 +29,14 @@ const LoginForm = () => {
       setRole(decoded.role);
       navigate("/profile");
     } catch (error) {
-      console.log(error.message);
+      if (error.response && error.response.status === 403) {
+        setError("Your email is not verified.");
+      } else {
+        setError("An error occurred while logging in.");
+      }
     }
   }
+
   return (
     <>
       <section className=" py-10">
@@ -73,28 +79,21 @@ const LoginForm = () => {
                     >
                       Password
                     </label>
-                    <div class="text-sm">
-                      <a
-                        href="#"
-                        class="font-semibold text-indigo-600 hover:text-indigo-500"
-                      >
-                        Forgot password?
-                      </a>
-                    </div>
                   </div>
                   <div class="mt-2">
                     <input
                       id="password"
                       name="password"
-                      type="password"
+                      type="text"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       autocomplete="current-password"
-                      required
                       class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
                 </div>
+
+                {error && <div className="text-red-500">{error}</div>}
 
                 <div>
                   <button

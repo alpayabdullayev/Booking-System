@@ -8,6 +8,7 @@ import "swiper/css/pagination";
 
 // import required modules
 import { Autoplay, Pagination } from "swiper/modules";
+import { HashLoader } from "react-spinners";
 
 const DestinationSlider = () => {
   const [data, setData] = useState(null);
@@ -46,7 +47,9 @@ const DestinationSlider = () => {
   let slides = null;
 
   if (isLoading) {
-    slides = <p>Loading...</p>;
+    slides =               <div className="flex justify-center w-full  items-center ">
+    <HashLoader color="#183ee7" />
+  </div>;
   } else if (data && data.images) {
     slides = data.images.map((item) => (
       <SwiperSlide key={item._id}>

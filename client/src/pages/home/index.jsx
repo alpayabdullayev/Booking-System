@@ -10,6 +10,7 @@ import Banner from "@/components/common/banner";
 import WishlistSection from "@/components/wishlist";
 // import Stripe from "@/stripe";
 import Stripe from "@/stripe";
+import { TabsDemo } from "@/components/profile/tabsDemo";
 
 const Home = () => {
   return (

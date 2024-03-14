@@ -32,7 +32,25 @@ export const createHotel = async (req, res, next) => {
 export const updateHotel = async (req, res, next) => {
   try {
     const { id } = req.params;
-
+    const {
+      name,
+      rooms,
+      type,
+      city,
+      address,
+      distance,
+      title,
+      desc,
+      rating,
+      hotelStars,
+      cheapestPrice,
+      featured,
+      mapAddress,
+      languages,
+      about,
+      images,
+      mainImage,
+    } = req.body;
     let imagesResults = [];
     if (req.files && req.files.images) {
       imagesResults = await Promise.all(
@@ -64,12 +82,27 @@ export const updateHotel = async (req, res, next) => {
       updateData.mainImage = mainImageResult.secure_url;
     }
 
-    const updateHotel = await Hotel.findByIdAndUpdate(
-      id,
-      { $set: updateData },
-      { new: true }
-    );
+    const hotel = await Hotel.findById(id);
+    hotel.name = name;
 
+    console.log(rooms);
+    console.log(hotel.rooms);
+    hotel.rooms = rooms[0];
+    rooms.forEach((x) => console.log(x));
+    rooms.forEach((x) => hotel.rooms.push(x));
+    hotel.type = type;
+    hotel.city = city;
+    hotel.address = address;
+    hotel.distance = distance;
+    hotel.title = title;
+    hotel.desc = desc;
+    hotel.rating = rating;
+    hotel.hotelStars = hotelStars;
+    hotel.cheapestPrice = cheapestPrice;
+    hotel.featured = featured;
+    hotel.languages = languages;
+    hotel.about = about;
+    await hotel.save();
     res.status(200).json(updateHotel);
   } catch (err) {
     next(err);
@@ -86,13 +119,50 @@ export const deleteHotel = async (req, res, next) => {
   }
 };
 
+export const addComment = async (req, res, next) => {
+  const { comment } = req.body;
+  const userId = req.body.userId;
+  console.log(comment);
+  console.log(userId);
+  try {
+    const postComment = await Hotel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $push: { reviews: { text: comment, user: userId } },
+      },
+      { new: true }
+    );
+    if (!postComment) {
+      throw new Error("Updated document not found");
+    }
+    const post = await Hotel.findById(postComment._id).populate(
+      "reviews.user",
+      "username"
+    );
+
+    res.status(200).json({
+      success: true,
+      post,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const getHotelById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const hotel = await Hotel.findById(id)
       .populate("type")
       .populate("rooms")
-      .populate("reviews");
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "user",
+          model: "UserBooking",
+        },
+      });
+
     res.status(200).json(hotel);
   } catch (err) {
     next(err);
@@ -232,7 +302,7 @@ export const getHotels = async (req, res, next) => {
     const limit = parseInt(queryLimit) || 10;
     const hotels = await Hotel.find({
       ...others,
-      cheapestPrice: { $gt: min | 1, $lt: max || 999 },
+      cheapestPrice: { $gt: min || 1, $lt: max || 999 },
     })
       .populate("type")
       .limit(limit);
@@ -243,25 +313,25 @@ export const getHotels = async (req, res, next) => {
   }
 };
 
-export const addComment = async (req, res, next) => {
-  try {
-    const { hotelId, userId, rating, comment } = req.body;
+// export const addComment = async (req, res, next) => {
+//   try {
+//     const { hotelId, userId, rating, comment } = req.body;
 
-    const hotel = await Hotel.findById(hotelId);
+//     const hotel = await Hotel.findById(hotelId);
 
-    if (!hotel) {
-      return res.status(404).json({ error: "Hotel not found" });
-    }
+//     if (!hotel) {
+//       return res.status(404).json({ error: "Hotel not found" });
+//     }
 
-    hotel.reviews.push({ user: userId, ratings: rating, comment: comment });
+//     hotel.reviews.push({ user: userId, ratings: rating, comment: comment });
 
-    if (rating > 5) {
-      res.status(400).json({ message: "5den yuxari olmaz" });
-    }
-    await hotel.save();
+//     if (rating > 5) {
+//       res.status(400).json({ message: "5den yuxari olmaz" });
+//     }
+//     await hotel.save();
 
-    res.status(201).json({ message: "Comment added successfully", hotel });
-  } catch (error) {
-    next(error);
-  }
-};
+//     res.status(201).json({ message: "Comment added successfully", hotel });
+//   } catch (error) {
+//     next(error);
+//   }
+// };

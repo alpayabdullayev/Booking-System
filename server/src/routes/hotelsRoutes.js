@@ -1,7 +1,7 @@
 import express from "express";
 
 import { countByCity,getHotelsByType,  createHotel, deleteHotel, getAllHotels, getHotelById, updateHotel, getHotels, getHotelRooms, addComment } from "../controller/hotelController.js";
-import { verifyAdmin } from "../utils/verifyToken.js";
+import { verifyAdmin, verifyUser } from "../utils/verifyToken.js";
 import upload from "../middleware/upload.js";
 
 export const HotelRouter = express.Router();
@@ -33,4 +33,5 @@ HotelRouter.get("/hotels", getHotels);
 HotelRouter.get("/hotels/room/:id", getHotelRooms);
 
 
-HotelRouter.post("/comment",addComment)
+// HotelRouter.post("/comment",addComment)
+HotelRouter.put('/comment/hotel/:id', addComment);

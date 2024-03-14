@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import MainCard from "../common/mainCard";
 import { GlobalContext } from "@/context/GlobalContext";
+import { toast } from "sonner";
 import MainCardSkeleton from "../common/mainCardSkeleton";
 
 const WishlistSection = () => {

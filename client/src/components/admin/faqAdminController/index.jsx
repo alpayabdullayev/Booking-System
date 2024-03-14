@@ -5,6 +5,21 @@ import Dashboard from "../Dashboard";
 import axios from "axios";
 import { FaTrash } from "react-icons/fa";
 import { RxUpdate } from "react-icons/rx";
+import { HashLoader } from "react-spinners";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@radix-ui/react-alert-dialog";
+import { AiOutlineDelete } from "react-icons/ai";
+import {
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "@/components/ui/alert-dialog";
 
 const FaqAdminController = () => {
   const [faq, setfaq] = useState(null);
@@ -48,27 +63,7 @@ const FaqAdminController = () => {
         <div className=" w-2/12"></div>
         <main className=" w-full min-h-screen bg-gray-200  px-20 ">
           <div className=" flex py-5 items-center justify-between flex-wrap">
-            <div className=" flex flex-wrap gap-4 py-5">
-              <div>
-                <button className=" py-2 rounded-md px-2 bg-blue-600 text-white">
-                  A-Z
-                </button>
-              </div>
-              <div>
-                <button className=" py-2 rounded-md px-2 bg-blue-600 text-white">
-                  Z-A
-                </button>
-              </div>
-              <div>
-                <input
-                  type="text"
-                  className=" py-2 px-2 border border-gray-300  rounded-md"
-                  name=""
-                  placeholder="Search..."
-                  id=""
-                />
-              </div>
-            </div>
+            <div className=" flex flex-wrap gap-4 py-5"></div>
             <div>
               <div>
                 <Link to={"/admin/hotel/create  "}>
@@ -98,7 +93,9 @@ const FaqAdminController = () => {
               </thead>
               <tbody>
                 {loading ? (
-                  <p>loading...</p>
+                  <div className="flex justify-center w-full  items-center ">
+                    <HashLoader color="#183ee7" />
+                  </div>
                 ) : (
                   faq &&
                   faq.map((item) => (
@@ -115,12 +112,31 @@ const FaqAdminController = () => {
 
                       <td className="py-2 px-4 border border-gray-300">
                         {" "}
-                        <button
-                          className="bg-red-500 text-white py-1 px-2 rounded-md mr-2"
-                          onClick={() => HotelDelete(item._id)}
-                        >
-                          <FaTrash />
-                        </button>
+                        <AlertDialog>
+                          <AlertDialogTrigger>
+                            <button className="bg-red-500 text-white py-1 px-2 rounded-md mr-2">
+                              <FaTrash />
+                            </button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                You are sure to delete?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                If you delete it, you can't get it back
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => HotelDelete(item._id)}
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                         <button
                           className="bg-blue-500 text-white py-1 px-2 rounded-md"
                           onClick={() => navigateUpdate(item._id)}

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Dashboard from "../Dashboard";
+import toast from "react-hot-toast";
 
 const CreateRoom = () => {
   const [data, setData] = useState([]);
@@ -48,10 +49,10 @@ const CreateRoom = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      alert("room başarıyla oluşturuldu!");
+      alert("romm created")
     } catch (error) {
       console.error("room oluşturma hatası:", error);
-      alert("room oluşturma sırasında bir hata oluştu!");
+      toast.error("An error occurred while creating room!");
     }
   };
 

@@ -44,7 +44,7 @@ const ContactForm = () => {
       })}
       onSubmit={handleFormSubmit}
     >
-      <Form className="container mx-auto mt-8 max-w-md">
+      <Form className="container mx-auto mt-6 max-w-md">
         <div className="mb-4">
           <label
             htmlFor="firstName"

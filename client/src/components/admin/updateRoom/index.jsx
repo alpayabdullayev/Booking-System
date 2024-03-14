@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Dashboard from "../Dashboard";
+import toast from "react-hot-toast";
 
 const UpdateRoom = () => {
   const [data, setdata] = useState(null);
@@ -78,11 +79,11 @@ const UpdateRoom = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      alert("Oda başarıyla güncellendi!");
+      toast.success("The room has been updated successfully!");
       navigate("/admin/room");
     } catch (error) {
       console.error("Oda güncelleme hatası:", error);
-      alert("Oda güncelleme sırasında bir hata oluştu!");
+      toast.error("An error occurred while updating the room!");
     }
   };
   return (

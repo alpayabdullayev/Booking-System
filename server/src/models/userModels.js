@@ -59,6 +59,12 @@ const UserSchema = new Schema(
         ref: "Bookings",
       },
     ],
+    blogs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "BlogBooking",
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -74,3 +80,5 @@ UserSchema.methods.emailVerification = function () {
 // }
 
 export default mongoose.model("UserBooking", UserSchema);
+
+

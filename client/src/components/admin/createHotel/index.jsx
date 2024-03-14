@@ -4,6 +4,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { UserContext } from "@/context/userContext";
+import toast from "react-hot-toast";
 
 const CreateHotel = () => {
   const [data, setData] = useState([]);
@@ -48,10 +49,10 @@ const CreateHotel = () => {
         }
       );
       console.log(response.data);
-      alert("Hotel created successfully!");
+      toast.success("Hotel created successfully!")
     } catch (error) {
       console.error(error.message);
-      alert("An error occurred while creating hotel");
+      toast.error("An error occurred while creating hotel")
     } finally {
       setSubmitting(false);
     }

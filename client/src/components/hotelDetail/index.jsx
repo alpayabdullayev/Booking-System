@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { FaBed, FaStar } from "react-icons/fa";
+import { FaBed, FaHeart, FaStar } from "react-icons/fa";
 import { CiHeart, CiLocationOn, CiPlay1, CiShare2 } from "react-icons/ci";
 import { IoFootstepsOutline } from "react-icons/io5";
 import { MdLocationCity, MdOutlineGTranslate } from "react-icons/md";
@@ -15,6 +15,7 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import "./index.scss";
 import { differenceInDays } from "date-fns";
+import { io } from "socket.io-client";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -31,16 +32,26 @@ import { SlSizeFullscreen } from "react-icons/sl";
 import { BsPersonStanding } from "react-icons/bs";
 import { MdOutlineChildFriendly } from "react-icons/md";
 import toast, { Toaster } from "react-hot-toast";
-import StripeCheckout from "react-stripe-checkout";
-import MapChart from "../AboutPage/MapChart";
 import MapStatic from "../AboutPage/map";
 import ContactForm from "../ContactComponents/ContactForm";
 import { GlobalContext } from "@/context/GlobalContext";
+import {
+  FacebookShareButton,
+  WhatsappShareButton,
+  WhatsappIcon,
+  FacebookIcon,
+} from "react-share";
+
+const socket = io("/", {
+  reconnection: true,
+});
+
 export const HotelDetailSection = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, setUser, role, setRole, userId, token, setToken } =
     useContext(UserContext);
+  const { handleAddToWishlist, wishlist } = useContext(GlobalContext);
 
   const [data, setdata] = useState(null);
   const [IsLoading, setIsLoading] = useState(true);
@@ -48,13 +59,50 @@ export const HotelDetailSection = () => {
   const [roomCount, setRoomCount] = useState(1);
   const [openModal, setOpenModal] = useState(false);
   const { saveBookingData } = useContext(GlobalContext);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const [commentsRealTime, setCommentsRealTime] = useState([]);
+
+  const shareUrl = `http://localhost:5173/hotelDetail/${id}`;
+
+  useEffect(() => {
+    // console.log('SOCKET IO', socket);
+    socket.on("new-comment", (newComment) => {
+      setCommentsRealTime((prevComments) => [...prevComments, newComment]);
+    });
+    return () => socket.disconnect();
+  }, [socket]);
+
+  const addComment = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.put(
+        `http://localhost:8000/api/comment/hotel/${id}`,
+        { comment, userId }
+      );
+      console.log(res.data);
+      if (res.data.success === true) {
+        setComment("");
+        setComments(res.data.reviews);
+        y;
+      }
+      getAll();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  let uiCommentUpdate =
+    commentsRealTime.length > 0 ? commentsRealTime : comments;
 
   async function getAll() {
     try {
       const res = await axios.get(`http://localhost:8000/api/find/${id}`);
       setdata(res.data);
-      console.log(res.data);
+
       setIsLoading(false);
+      setComments(res.data.reviews);
+      console.log(setComments);
     } catch (error) {
       console.log(error.message);
     }
@@ -62,7 +110,7 @@ export const HotelDetailSection = () => {
 
   useEffect(() => {
     getAll();
-  }, [id]);
+  }, [id, comment]);
 
   const { dates, options } = useContext(SearchContext);
 
@@ -83,19 +131,6 @@ export const HotelDetailSection = () => {
     }
   }, [options]);
 
-  const handleOpen = (i) => {
-    setSlideNumber(i);
-    setOpen(true);
-  };
-
-  const handleClick = () => {
-    if (user) {
-      setOpenModal(true);
-    } else {
-      navigate("/login");
-    }
-  };
-
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [selectedHotel, setSelectedHotel] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -109,197 +144,19 @@ export const HotelDetailSection = () => {
     },
   ]);
 
-  //error.response.data.message
-
   const publishableKey =
     "pk_test_51OkuxcGezhrpHtHsTwcCLYYLOyRKuix2BxtNXLolGhkdJykXFX7ZUIdQzWfVxM9OMygZeFYYZgxlDULO4adgAWQY003r8valPM";
 
-  // const handleSuccess = () => {
-  //   console.log("ugurludu");
-  // };
-  // const handleFailure = () => {
-  //   console.log("ugursuz");
-  // };
   const handleResponse = (isSuccess) => {
     if (isSuccess) {
       console.log("ugurludu");
-      alert("isledi");
+      toast.success("isledi");
       toast.success("Successfully Rezerv");
     } else {
       console.log("ugursuz");
-
-      // toast.success("Successfully Rezerv...");
     }
   };
 
-  // const onSubmit = async (stripeToken) => {
-  //   try {
-  //     const days = differenceInDays(
-  //       new Date(state[0].endDate),
-  //       new Date(state[0].startDate)
-  //     );
-
-  //     const calculatedTotalPrice = days * selectedRoom.price;
-  //     setTotalPrice(calculatedTotalPrice);
-
-  //     const bookingData = {
-  //       ...data,
-  //       room: selectedRoom._id,
-  //       user: userId,
-  //       start_time: state[0].startDate,
-  //       end_time: state[0].endDate,
-  //       total_price: calculatedTotalPrice,
-  //     };
-
-  //     const paymentResponse = await axios({
-  //       url: "http://localhost:8000/payment",
-  //       method: "post",
-  //       data: {
-  //         amount: calculatedTotalPrice * 100,
-  //         token: stripeToken.id,
-  //       },
-  //     }
-  //     );
-  //     const MySwal = withReactContent(Swal);
-  //     await MySwal.fire({
-  //       title: "Rezerv Uğurla Başa Çatdı!",
-  //       text: "You clicked the button!",
-  //       icon: "success",
-  //     });
-  //     console.log(paymentResponse)
-
-  //     if (paymentResponse.status === 200) {
-  //       const bookingResponse = await axios.post(
-  //         `http://localhost:8000/api/book/${id}`,
-  //         bookingData
-  //       );
-
-  //       if (bookingResponse.status === 200) {
-  //         handleResponse(true);
-  //         console.log(bookingResponse.data);
-  //         reset();
-  //         setSelectedRoom(null);
-  //         setSelectedHotel(null);
-  //       } else {
-  //         handleResponse(false);
-
-  //         if (bookingResponse.status === 400) {
-  //           toast.error(
-  //             "This room has already been booked for the specified time period."
-  //           );
-  //         } else if (bookingResponse.status === 401) {
-  //           toast.error("Invalid date selection.");
-  //         }
-  //       }
-  //     } else {
-  //       handleResponse(false);
-  //       console.log("Payment failed");
-  //     }
-
-  //   } catch (error) {
-  //     handleResponse(false);
-  //     console.error(error);
-  //     if (error.response && error.response.data) {
-  //       console.log(error.response.data);
-  //     }
-  //     toast.error("bu otaglar secilmisdir");
-  //   }
-  // };
-
-  // Функция для отправки запроса на оплату
-  // const processPayment = async (stripeToken, calculatedTotalPrice) => {
-  //   try {
-  //     const paymentResponse = await axios({
-  //       url: "http://localhost:8000/payment",
-  //       method: "post",
-  //       data: {
-  //         amount: calculatedTotalPrice * 100,
-  //         token: stripeToken.id,
-  //       },
-  //     });
-
-  //     if (paymentResponse.status === 200) {
-  //       return true; // Возвращаем true, если оплата прошла успешно
-  //     } else {
-  //       console.log("Payment failed");
-  //       return false; // Возвращаем false, если оплата не удалась
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     toast.error("Ошибка при обработке платежа");
-  //     return false; // Возвращаем false в случае ошибки
-  //   }
-  // };
-
-  // Функция для резервирования номера
-  // const processBooking = async (bookingData, id) => {
-  //   try {
-  //     const bookingResponse = await axios.post(
-  //       `http://localhost:8000/api/book/${id}`,
-  //       bookingData
-  //     );
-
-  //     if (bookingResponse.status === 200) {
-  //       return true; // Возвращаем true, если резервирование прошло успешно
-  //     } else {
-  //       console.log("Booking failed");
-  //       return false; // Возвращаем false, если резервирование не удалось
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     toast.error("Ошибка при резервировании номера");
-  //     return false; // Возвращаем false в случае ошибки
-  //   }
-  // };
-
-  // Функция для обработки отправки данных (резерв и оплата)
-  // const onSubmit = async (stripeToken) => {
-  //   try {
-  //     const days = differenceInDays(
-  //       new Date(state[0].endDate),
-  //       new Date(state[0].startDate)
-  //     );
-
-  //     const calculatedTotalPrice = days * selectedRoom.price;
-  //     setTotalPrice(calculatedTotalPrice);
-
-  //     const bookingData = {
-  //       ...data,
-  //       room: selectedRoom._id,
-  //       user: userId,
-  //       start_time: state[0].startDate,
-  //       end_time: state[0].endDate,
-  //       total_price: calculatedTotalPrice,
-  //     };
-
-  //     const paymentResult = await processPayment(
-  //       stripeToken,
-  //       calculatedTotalPrice
-  //     );
-  //     if (paymentResult) {
-  //       const bookingResult = await processBooking(bookingData, id);
-  //       if (bookingResult) {
-  //         handleResponse(true);
-  //         console.log("Booking and payment successful");
-  //         reset();
-  //         setSelectedRoom(null);
-  //         setSelectedHotel(null);
-  //       } else {
-  //         handleResponse(false);
-  //       }
-  //     } else {
-  //       handleResponse(false);
-  //     }
-  //   } catch (error) {
-  //     handleResponse(false);
-  //     console.error(error);
-  //     if (error.response && error.response.data) {
-  //       console.log(error.response.data);
-  //     }
-  //   }
-  // };
-
-  // Функция для отправки запроса на бронирование
   const processBooking = async (bookingData, id) => {
     try {
       const bookingResponse = await axios.post(
@@ -308,50 +165,24 @@ export const HotelDetailSection = () => {
       );
 
       if (bookingResponse.status === 201) {
-        return true; // Возвращаем true, если бронирование прошло успешно
+        return true;
       } else {
         console.log("Booking failed");
-        return false; // Возвращаем false, если бронирование не удалось
+        return false;
       }
     } catch (error) {
       console.error(error);
       if (error.response && error.response.status === 400) {
-        // Если бронирование уже существует для данного номера и временного периода,
-        // возвращаем ошибку с соответствующим сообщением
-        toast.error("Bu oda belirtilen zaman aralığında zaten rezerve edilmiş");
+        toast.error(
+          "This room has already been booked for the specified time period"
+        );
       } else {
-        // В случае других ошибок возвращаем общее сообщение об ошибке
         toast.error("1gun rezerv etmek mumkun deyil");
       }
-      return false; // Возвращаем false в случае ошибки
+      return false;
     }
   };
 
-  const processPayment = async (stripeToken, calculatedTotalPrice) => {
-    try {
-      const paymentResponse = await axios({
-        url: "http://localhost:8000/payment",
-        method: "post",
-        data: {
-          amount: calculatedTotalPrice * 100,
-          token: stripeToken.id,
-        },
-      });
-
-      if (paymentResponse.status === 200) {
-        return true; // Возвращаем true, если оплата прошла успешно
-      } else {
-        console.log("Payment failed");
-        return false; // Возвращаем false, если оплата не удалась
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Ошибка при обработке платежа");
-      return false; // Возвращаем false в случае ошибки
-    }
-  };
-
-  // Функция для обработки бронирования
   const handleBooking = async () => {
     try {
       const days = differenceInDays(
@@ -388,38 +219,13 @@ export const HotelDetailSection = () => {
     }
   };
 
-  // Функция для обработки оплаты
-  // const handlePayment = async (stripeToken) => {
-  //   try {
-  //     const days = differenceInDays(
-  //       new Date(state[0].endDate),
-  //       new Date(state[0].startDate)
-  //     );
-
-  //     const calculatedTotalPrice = days * selectedRoom.price;
-  //     setTotalPrice(calculatedTotalPrice);
-
-  //     const paymentResult = await processPayment(
-  //       stripeToken,
-  //       calculatedTotalPrice
-  //     );
-  //     if (paymentResult) {
-  //       handleResponse(true);
-  //       console.log("Payment successful");
-  //       reset();
-  //       setSelectedRoom(null);
-  //       setSelectedHotel(null);
-  //     } else {
-  //       handleResponse(false);
-  //     }
-  //   } catch (error) {
-  //     handleResponse(false);
-  //     console.error(error);
-  //     if (error.response && error.response.data) {
-  //       console.log(error.response.data);
-  //     }
-  //   }
-  // };
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
 
   return (
     <>
@@ -455,15 +261,40 @@ export const HotelDetailSection = () => {
                       </span>
                     </div>
                     <div className="w-10 h-10   text-lg rounded-full  shadow-md border flex  justify-center items-center">
-                      <span className=" ">
-                        <CiShare2 />
-                      </span>
+                      <button onClick={() => handleAddToWishlist(data?._id)}>
+                        <span>
+                          {wishlist.find((x) => x?.hotel?._id === data?._id) ? (
+                            <span className="text-red-500">
+                              <FaHeart />
+                            </span>
+                          ) : (
+                            <span className=" text-black">
+                              <FaHeart />
+                            </span>
+                          )}
+                          {/* <FaHeart /> */}
+                        </span>
+                      </button>
                     </div>
                     <div className="w-10 h-10   text-lg rounded-full  shadow-md border flex  justify-center items-center">
                       <span className=" ">
-                        <CiHeart />
+                        <WhatsappShareButton
+                          url={shareUrl}
+                          quote={"Title or jo bhi aapko likhna ho"}
+                          hashtag={"#portfolio..."}
+                        >
+                          <WhatsappIcon size={40} round={true} />
+                        </WhatsappShareButton>
                       </span>
                     </div>
+
+                    {/* <FacebookShareButton
+                      url={shareUrl}
+                      quote={"Title or jo bhi aapko likhna ho"}
+                      hashtag={"#portfolio..."}
+                    >
+                      <FacebookIcon size={40} round={true} />
+                    </FacebookShareButton> */}
                   </div>
                 </div>
               </div>
@@ -532,49 +363,9 @@ export const HotelDetailSection = () => {
                     <div>
                       <h1 className=" font-bold text-2xl">About this Hotel</h1>
                       <p className="flex flex-col gap-4 py-5">
-                        <span>
-                          {" "}
-                          The company continued to work at its regular pace. In
-                          1972, the P250 Urraco, the 400 GT Jarama, the 400 GT
-                          Espada and the P400 Miura SV were in full production.
-                          That year, in an attempt to improve sales that were
-                          frankly quite disappointing until then, the Jarama
-                          hand a 365-hp engine and was dubbed the Jarama S.{" "}
-                        </span>
-                        <span>
-                          {" "}
-                          In 1972, the Urraco, which had experienced several
-                          initial slowdowns, was finally put into production.
-                          Almost inevitably, the S version also arrived in
-                          October of that year. In this case, the goal was not
-                          to enhance the car’s performance but to improve its
-                          overall quality, which had been neglected in the haste
-                          to start production.
-                        </span>
-                        <span>
-                          {" "}
-                          The following year, while waiting for the Countach
-                          prototype to be developed to a stage that would enable
-                          its production, the Espada was further modified and
-                          perfected, and the new series was presented in October
-                          1972. New wheels as well as perfected detailing of the
-                          entire body, the dashboard, the central instrument
-                          panel and various components characterised this
-                          well-made Series III. This last series essentially
-                          represented the decisive peak in the evolution of this
-                          outstanding four-seater, which is still in great
-                          demand among Lamborghini fans around the world. Its
-                          production would reach the respectable figure of 1226
-                          units, quite a large number for a carmaker of this
-                          size selling at top-level list prices.
-                        </span>
-                        <span>
-                          The production model of the Countach was codenamed LP
-                          400 because its V12 – positioned longitudinally behind
-                          the cockpit – was increased to an ideal displacement
-                          of 4 litres (3929 cc). This model debuted at the 1973
-                          Geneva Motor Show.
-                        </span>
+                        {data?.about}
+                        <br />
+                        <span>{data?.desc}</span>
                       </p>
                     </div>
                   </div>
@@ -703,18 +494,14 @@ export const HotelDetailSection = () => {
                         months={1}
                         minDate={new Date()}
                       />
-                      <button type="submit">SALAM</button>
-
-                      {/* <StripeCheckout
-                        stripeKey={publishableKey}
-                        label="Pay Now"
-                        name="Pay With Credit Card"
-                        billingAddress
-                        shippingAddress
-                        description={`Your total is $${totalPrice}`}
-                        amount={totalPrice * 100}
-                        token={onSubmit} 
-                      />*/}
+                      <div className=" px-2">
+                        <button
+                          className=" py-2 px-2 bg-blue-500 text-white rounded-md"
+                          type="submit"
+                        >
+                          Rezerv et
+                        </button>
+                      </div>
                     </form>
                   )}
                   <div className="">
@@ -734,57 +521,62 @@ export const HotelDetailSection = () => {
                         </div>
                       )}
                     </div>
-                  </div>
-
-                  <div>
-                    <h1 className="font-bold text-2xl pb-5">Reviews</h1>
-                    <div className=" py-10 w-1/2 rounded-lg bg-gray-50  border flex flex-col justify-center items-center">
-                      <div className=" flex-col text-blue-500 [font-size:_clamp(1em,2vw,5em)] font-bold flex gap-3 items-center">
-                        {data &&
-                          data.reviews.map((comment) => (
-                            <div className=" text-sm" key={comment._id}>
-                              <p>{comment.comment}</p>
-                              <p>{comment.ratings}</p>
-                              {/* <p>{console.log(comment)}</p> */}
+                    <div className="space-y-4 w-full px-5 py-5 mt-10 rounded-md  bg-gray-100">
+                      {data.reviews.map((comment, index) => (
+                        <div key={index} className="flex items-start space-x-4">
+                          <img
+                            className="h-14 w-14 rounded-full object-cover"
+                            src={comment?.user?.avatar}
+                            alt=""
+                          />
+                          <div className="flex flex-col">
+                            <div className="flex flex-col  space-x-2">
+                              <p className="font-bold">
+                                {comment?.user?.username}
+                              </p>
+                              <p className="text-gray-500">
+                                {formatDate(comment.created)}
+                              </p>
                             </div>
-                          ))}
+                            <p>{comment.text}</p>
+                          </div>
+                        </div>
+                      ))}{" "}
+                      <div>
+                        <form
+                          onSubmit={addComment}
+                          className=" flex gap-4 flex-wrap "
+                        >
+                          <input
+                            type="text"
+                            className=" border px-2 py-2  rounded-md"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            placeholder="Enter your comment"
+                          />
+                          <button
+                            className=" py-2 px-2 bg-blue-600 text-white rounded-md"
+                            type="submit"
+                          >
+                            Add Comment
+                          </button>
+                        </form>
                       </div>
-                      {/* <p className="text-center text-xl font-bold">Excellent</p>
-                      <p className=" text-gray-600">(2 Reviews)</p> */}
                     </div>
-                  </div>
-                  <div>
-                    <input className="border" type="text" name="" id="" />
                   </div>
                 </div>
 
                 <div className="  col-span-12 lg:col-span-4">
-                  <MapStatic />
-                  <div className=" border my-8 py-8 rounded-md">
-                    <h5 className="  text-center w-6/12 mx-auto rounded-lg cursor-pointer  font-bold capitalize text-xl py-2  bg-blue-600 text-white ">
-                      Inquiry
-                    </h5>
-                    <ContactForm />
+                  <div className="sticky top-5">
+                    <div className=" border my-8 py-8 rounded-md">
+                      <h5 className="  text-center w-6/12 mx-auto rounded-lg cursor-pointer  font-bold capitalize text-xl py-2  bg-blue-600 text-white ">
+                        Inquiry
+                      </h5>
+                      <ContactForm />
+                    </div>
+                    <MapStatic />
                   </div>
                 </div>
-              </div>
-              <div className="">
-                {/* <div className="">
-                  <h1>Perfect for a {days}-night stay!</h1>
-                  <span>
-                    Located in the real heart of Krakow, this property has an
-                    excellent location score of 9.8!
-                  </span>
-                  <h2>
-                    <b>${days * data.cheapestPrice * roomCount}</b> ({days}{" "}
-                    nights)
-                  </h2>
-                   <button onClick={() => updateRoomCount(roomCount + 1)}>
-                    Increase Room Count
-                  </button> 
-
-                
-                </div> */}
               </div>
             </div>
           </section>

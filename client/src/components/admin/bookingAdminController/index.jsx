@@ -7,6 +7,7 @@ import { FaTrash } from "react-icons/fa";
 import ReactPaginate from "react-paginate";
 // import { RiUpdateFill } from "react-icons/ri"; // Değiştirilmiş import
 import { GrUpdate } from "react-icons/gr";
+import { HashLoader } from "react-spinners";
 
 const BookAdminController = () => {
   const [book, setBook] = useState(null);
@@ -33,7 +34,7 @@ const BookAdminController = () => {
   }, [token]);
 
   useEffect(() => {
-    setTotalPages(Math.ceil(book?.length / perPage)); 
+    setTotalPages(Math.ceil(book?.length / perPage));
   }, [book, perPage]);
 
   const startIndex = currentPage * perPage;
@@ -47,7 +48,7 @@ const BookAdminController = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      const updatedBook = book?.filter((item) => item._id !== bookId); 
+      const updatedBook = book?.filter((item) => item._id !== bookId);
       setBook(updatedBook);
     } catch (error) {
       console.log(error);
@@ -65,27 +66,7 @@ const BookAdminController = () => {
         <div className="w-2/12"></div>
         <main className="w-full min-h-screen bg-gray-200 px-20 ">
           <div className="flex py-5 items-center justify-between flex-wrap">
-            <div className="flex flex-wrap gap-4 py-5">
-              <div>
-                <button className="py-2 rounded-md px-2 bg-blue-600 text-white">
-                  A-Z
-                </button>
-              </div>
-              <div>
-                <button className="py-2 rounded-md px-2 bg-blue-600 text-white">
-                  Z-A
-                </button>
-              </div>
-              <div>
-                <input
-                  type="text"
-                  className="py-2 px-2 border border-gray-300 rounded-md"
-                  name=""
-                  placeholder="Search..."
-                  id=""
-                />
-              </div>
-            </div>
+            <div className="flex flex-wrap gap-4 py-5"></div>
           </div>
           <div className="overflow-auto">
             <table className="border rounded-md w-full border-solid border-gray-300">
@@ -110,7 +91,9 @@ const BookAdminController = () => {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="6">Loading...</td>
+                    <div className="flex justify-center w-full  items-center ">
+                      <HashLoader color="#183ee7" />
+                    </div>
                   </tr>
                 ) : (
                   subset.map((item) => (

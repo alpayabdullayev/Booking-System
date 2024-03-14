@@ -4,6 +4,7 @@ import Dashboard from "../Dashboard";
 import { UserContext } from "@/context/userContext";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
+import { HashLoader } from "react-spinners";
 
 const UserAdminController = () => {
   const [user, setUser] = useState(null);
@@ -63,25 +64,7 @@ const UserAdminController = () => {
         <main className=" w-full min-h-screen bg-gray-200  px-20 ">
           <div className=" flex py-5 items-center justify-between flex-wrap">
             <div className=" flex flex-wrap gap-4 py-5">
-              <div>
-                <button className=" py-2 rounded-md px-2 bg-blue-600 text-white">
-                  A-Z
-                </button>
-              </div>
-              <div>
-                <button className=" py-2 rounded-md px-2 bg-blue-600 text-white">
-                  Z-A
-                </button>
-              </div>
-              <div>
-                <input
-                  type="text"
-                  className=" py-2 px-2 border border-gray-300  rounded-md"
-                  name=""
-                  placeholder="Search..."
-                  id=""
-                />
-              </div>
+              <div></div>
             </div>
             <div>
               <div>
@@ -109,7 +92,9 @@ const UserAdminController = () => {
               </thead>
               <tbody>
                 {loading ? (
-                  <p>loading...</p>
+                  <div className="flex justify-center w-full  items-center ">
+                    <HashLoader color="#183ee7" />
+                  </div>
                 ) : (
                   subset.map((item) => (
                     <tr key={item._id}>

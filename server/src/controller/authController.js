@@ -10,7 +10,7 @@ export const register = async (req, res, next) => {
     const userExists = await User.findOne({ username });
 
     if (userExists) {
-      return res.status(409).json({message : "username already exists"});
+      return res.status(409).json({ message: "username already exists" });
     }
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.password, salt);
@@ -20,34 +20,37 @@ export const register = async (req, res, next) => {
       password: hash,
     });
 
-    newUser.emailVerification()
+    newUser.emailVerification();
 
     await newUser.save();
     const emailText = `Please click the following link to verify your email: 
-    ${process.env.CLIENT_URL}/Verified?token=${newUser.emailVerificationToken}`
- 
-     await sendMail(newUser.email, 'Please verify your email', emailText)
- 
-    
-    res.status(200).send({message : "Please verify your email"});
+    ${process.env.CLIENT_URL}/Verified?token=${newUser.emailVerificationToken}`;
+
+    await sendMail(newUser.email, "Please verify your email", emailText);
+
+    res.status(200).send({ message: "Please verify your email" });
   } catch (err) {
     next(err);
   }
 };
 
-
 export const verifyEmail = async (req, res) => {
   try {
-    const { token } = req.query
-    console.log(token)
-    const user = await User.findOne({ emailVerificationToken: token })
+    const { token } = req.query;
+    console.log("verify token", token);
+    const user = await User.findOne({ emailVerificationToken: token });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid token.' })
+      return res.status(400).json({ message: "Invalid token." });
     }
 
-    user.verified = true
-    user.emailVerificationToken = undefined
-    await user.save()
+    if (user.isVerified) {
+      return res.status(400).json({ message: "Email already verified." });
+    }
+
+    console.log();
+    user.isVerified = true;
+    user.emailVerificationToken = undefined;
+    await user.save();
     const access_token = jwt.sign(
       {
         userId: user.id,
@@ -55,37 +58,39 @@ export const verifyEmail = async (req, res) => {
         role: user.role,
         username: user.username,
         bookings: user.bookings,
-        avatar:user.avatar,
-        phoneNumber:user.phoneNumber,
-        email:user.email
+        avatar: user.avatar,
+        phoneNumber: user.phoneNumber,
+        email: user.email,
       },
       process.env.JWT,
       { expiresIn: "1h" }
     );
 
     const { password, isAdmin, ...otherDetails } = user._doc;
-    res
-      .cookie("access_token", access_token, {
-        httpOnly: true,
-      })
-      .status(200)
-      .json({
-        message: "Login successful",
-        details: { ...otherDetails },
-        isAdmin,
-        access_token,
-      });
-
+    res.status(200).json({
+      message: "Email verification successful",
+      details: { ...otherDetails },
+      isAdmin,
+      access_token,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
-}
-
+};
 
 export const login = async (req, res, next) => {
   try {
     const user = await User.findOne({ username: req.body.username });
     if (!user) return next(createError(404, "User not found!"));
+
+    if (!user.isVerified) {
+      return next(
+        createError(
+          403,
+          "Account is not verified. Please verify your account before logging in."
+        )
+      );
+    }
 
     const isPasswordCorrect = await bcrypt.compare(
       req.body.password,
@@ -101,9 +106,8 @@ export const login = async (req, res, next) => {
         role: user.role,
         username: user.username,
         bookings: user.bookings,
-        avatar:user.avatar,
-        phoneNumber:user.phoneNumber,
-        email:user.email
+        avatar: user.avatar,
+        email: user.email,
       },
       process.env.JWT,
       { expiresIn: "1h" }
@@ -125,6 +129,3 @@ export const login = async (req, res, next) => {
     next(err);
   }
 };
-
-
-

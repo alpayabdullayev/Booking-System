@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 
 const HotelImage = ({ src, alt }) => (
-  <div className=" w-full rounded-lg overflow-hidden  group">
+  <div className="  col-span-4 h-full w-[100%] overflow-hidden rounded-lg group">
     <img
       src={src}
       alt={alt}
-      className="   w-full   h-full group-hover:scale-105 rounded-lg  object-cover duration-500  "
+      className="h-full w-full group-hover:scale-105 rounded-lg  object-cover duration-500  "
     />
   </div>
 );
@@ -45,9 +45,9 @@ const HotelDetails = ({
 const SearchItem = ({ item }) => (
   <div className="container mx-auto py-5 px-4 lg:px-0">
     <div className="grid grid-cols-1 gap-8">
-      <div className="flex flex-col  md:flex-row  border rounded-lg  shadow-lg">
+      <div className="grid  grid-cols-1 lg:grid-cols-12 border rounded-lg  shadow-lg">
         <HotelImage src={item.mainImage} alt="Cityscape" />
-        <div className="p-4 md:p-6 flex-grow">
+        <div className="p-4 md:p-6 col-span-8 flex-grow">
           <HotelDetails {...item} />
           <div className="flex justify-end mt-6">
             <div className="text-right">

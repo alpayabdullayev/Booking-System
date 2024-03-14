@@ -1,6 +1,7 @@
 import StripeCheckout from "react-stripe-checkout";
 import React, { useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 // import withReactContent from 'sweetalert2-react-content';
 
@@ -33,11 +34,11 @@ function Stripe() {
       });
       if (response.status === 200) {
         handleSuccess();
-        alert("isledi")
+        toast.success("isledi")
       }
     } catch (error) {
       handleFailure();
-      alert("erro")
+      toast.error("islemedi")
       console.log(error);
     }
   };

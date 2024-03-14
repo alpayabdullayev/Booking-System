@@ -13,7 +13,7 @@ const Featured = () => {
   async function getAll() {
     try {
       const res = await axios.get(
-        "http://localhost:8000/api/hotels?featured=true"
+        "http://localhost:8000/api/hotels?featured=true "
       );
       setdata(res.data);
       setIsLoading(false);
