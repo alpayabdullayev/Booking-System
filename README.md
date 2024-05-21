@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="https://res.cloudinary.com/dfmannche/image/upload/v1716316924/hvl25g7itjxorbc23ms0.png" alt="Traveler Booking System">
+  <img src="https://res.cloudinary.com/dfmannche/image/upload/v1716318125/sxundoz48v7bt62qlygc.png" alt="Traveler Booking System">
 </p>
 
 <br />
@@ -49,6 +49,9 @@ Traveler is A full-stack Booking System project built with React, Node.js, Expre
 #### User Interface:
 - **Tailwind CSS**: for responsive and beautiful designs.
 - **ShadcnUI**: for modern and beautifully designed components.
+
+#### Payment:
+- **Stripe**: for payment.
 
 #### Authentication and Security:
 - **JWT**: for Secures user sessions.
