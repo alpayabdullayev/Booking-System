@@ -42,9 +42,9 @@ import {
   FacebookIcon,
 } from "react-share";
 
-const socket = io("/", {
-  reconnection: true,
-});
+// const socket = io("/", {
+//   reconnection: true,
+// });
 
 export const HotelDetailSection = () => {
   const { id } = useParams();
@@ -65,35 +65,35 @@ export const HotelDetailSection = () => {
 
   const shareUrl = `http://localhost:5173/hotelDetail/${id}`;
 
-  useEffect(() => {
-    // console.log('SOCKET IO', socket);
-    socket.on("new-comment", (newComment) => {
-      setCommentsRealTime((prevComments) => [...prevComments, newComment]);
-    });
-    return () => socket.disconnect();
-  }, [socket]);
+  // useEffect(() => {
+  //   // console.log('SOCKET IO', socket);
+  //   socket.on("new-comment", (newComment) => {
+  //     setCommentsRealTime((prevComments) => [...prevComments, newComment]);
+  //   });
+  //   return () => socket.disconnect();
+  // }, [socket]);
 
-  const addComment = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.put(
-        `http://localhost:8000/api/comment/hotel/${id}`,
-        { comment, userId }
-      );
-      console.log(res.data);
-      if (res.data.success === true) {
-        setComment("");
-        setComments(res.data.reviews);
-        y;
-      }
-      getAll();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const addComment = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const res = await axios.put(
+  //       `http://localhost:8000/api/comment/hotel/${id}`,
+  //       { comment, userId }
+  //     );
+  //     console.log(res.data);
+  //     if (res.data.success === true) {
+  //       setComment("");
+  //       setComments(res.data.reviews);
+  //       y;
+  //     }
+  //     getAll();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  let uiCommentUpdate =
-    commentsRealTime.length > 0 ? commentsRealTime : comments;
+  // let uiCommentUpdate =
+  //   commentsRealTime.length > 0 ? commentsRealTime : comments;
 
   async function getAll() {
     try {
@@ -101,8 +101,8 @@ export const HotelDetailSection = () => {
       setdata(res.data);
 
       setIsLoading(false);
-      setComments(res.data.reviews);
-      console.log(setComments);
+      // setComments(res.data.reviews);
+      // console.log(setComments);
     } catch (error) {
       console.log(error.message);
     }
@@ -110,7 +110,7 @@ export const HotelDetailSection = () => {
 
   useEffect(() => {
     getAll();
-  }, [id, comment]);
+  }, [id]);
 
   const { dates, options } = useContext(SearchContext);
 
@@ -521,7 +521,7 @@ export const HotelDetailSection = () => {
                         </div>
                       )}
                     </div>
-                    <div className="space-y-4 w-full px-5 py-5 mt-10 rounded-md  bg-gray-100">
+                    {/* <div className="space-y-4 w-full px-5 py-5 mt-10 rounded-md  bg-gray-100">
                       {data.reviews.map((comment, index) => (
                         <div key={index} className="flex items-start space-x-4">
                           <img
@@ -562,7 +562,7 @@ export const HotelDetailSection = () => {
                           </button>
                         </form>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 

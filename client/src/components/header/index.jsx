@@ -12,7 +12,7 @@ const Header = () => {
   }
   return (
     <>
-      <div className=" py-10 bg-[url('https://modtour.travelerwp.com/wp-content/uploads/2022/04/Banner.png')] bg-center bg-cover bg-no-repeat min-h-[70vh]   pb-10">
+      <div className=" py-10 bg-[url('https://touragency.travelerwp.com/wp-content/uploads/2019/11/img_hero.jpg')] bg-center bg-cover bg-no-repeat min-h-[70vh]   pb-10">
         <div className="wrapper">
           <ul className="text-white  flex flex-wrap gap-8 items-center min-h-[60px]">
             <li className="flex hover:text-blue-800  border rounded-full p-2    duration-300 items-center gap-2 text-xl cursor-pointer">

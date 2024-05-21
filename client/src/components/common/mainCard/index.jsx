@@ -1,5 +1,5 @@
 import { GlobalContext } from "@/context/GlobalContext";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { CiLocationOn } from "react-icons/ci";
 import { FaClock, FaHeart, FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -13,7 +13,12 @@ const MainCard = ({ item }) => {
     return stars;
   };
 
-  const { handleAddToWishlist, wishlist } = useContext(GlobalContext);
+  const { handleAddToWishlist, fetchWishlist, wishlist } =
+    useContext(GlobalContext);
+
+  const handleClick = (id) => {
+    handleAddToWishlist(id);
+  };
 
   return (
     <>
@@ -35,7 +40,7 @@ const MainCard = ({ item }) => {
             ) : null}
           </div>
           <div className="absolute top-2 right-2">
-            <button onClick={() => handleAddToWishlist(item?._id)}>
+            <button onClick={() => handleClick(item?._id)}>
               <span>
                 {wishlist.find((x) => x?.hotel?._id === item?._id) ? (
                   <span className="text-red-500">

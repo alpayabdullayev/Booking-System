@@ -10,7 +10,7 @@ const WishlistSection = () => {
 
   useEffect(() => {
     fetchWishlist().then(() => setIsLoading(false));
-  }, [fetchWishlist]);
+  }, []); //fetchWishlist
 
   return (
     <>

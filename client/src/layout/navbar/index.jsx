@@ -75,7 +75,8 @@ const Navbar = () => {
 
   useEffect(() => {
     fetchWishlist().then(() => setIsLoading(false));
-  }, [fetchWishlist]);
+  }, []);
+  // console.log(wishlist)
   return (
     <>
       <nav className=" bg-white ">
@@ -305,6 +306,7 @@ const Navbar = () => {
               </div>
             </div>
           </div>
+          
         </div>
       </nav>
     </>

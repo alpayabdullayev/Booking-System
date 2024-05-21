@@ -49,7 +49,8 @@ const GlobalProvider = ({ children }) => {
       toast.success("Successful");
 
       console.log("Wishlist güncellendi:", response.data);
-      setWishlist([...wishlist,{...response.data.user.wishlist}])
+      await fetchWishlist()
+     
     } catch (error) {
       console.error("Wishlist güncellenirken hata oluştu:", error.message);
       setError(error.message);

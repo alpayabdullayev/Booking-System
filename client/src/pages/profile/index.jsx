@@ -172,7 +172,7 @@ const Profile = () => {
                 data &&
                 data.bookings.map((bookingItem) => (
                   <div
-                    key={bookingItem._id}
+                    key={bookingItem?._id}
                     className="bg-gray-100 overflow-hidden group rounded-lg p-4 mb-4 shadow-md"
                   >
                     <h3 className="text-lg font-semibold mb-2">
@@ -180,32 +180,32 @@ const Profile = () => {
                     </h3>
                     <div className=" overflow-hidden rounded-md">
                       <img
-                        src={bookingItem.hotel.mainImage}
+                        src={bookingItem?.hotel?.mainImage}
                         className="w-full group-hover:scale-105 duration-300 h-64 object-cover rounded-md mb-2"
                         alt=""
                       />
                     </div>
                     <p className="text-sm text-gray-500 mb-1">
-                      Start Time: {bookingItem.start_time}
+                      Start Time: {bookingItem?.start_time}
                     </p>
                     <p className="text-sm text-gray-500 mb-1">
-                      End Time: {bookingItem.end_time}
+                      End Time: {bookingItem?.end_time}
                     </p>
                     <p className="text-sm text-gray-500 mb-1">
-                      Total Price: ${bookingItem.total_price}
+                      Total Price: ${bookingItem?.total_price}
                     </p>
                     <p className="text-sm text-gray-500 mb-1">
                       Hotel: {bookingItem?.hotel?.name}
                     </p>
                     <p className="text-sm capitalize text-gray-500 mb-1">
-                      City: {bookingItem.hotel.city}
+                      City: {bookingItem?.hotel?.city}
                     </p>
                     <p className="text-sm text-gray-500">
-                      Email: {bookingItem.user.email}
+                      Email: {bookingItem?.user?.email}
                     </p>
                     <div className=" py-3">
                       <button className=" py-2 px-2 bg-blue-600 text-white rounded-md">
-                        <Link to={`/book/${bookingItem._id}`}>
+                        <Link to={`/book/${bookingItem?._id}`}>
                           See Your Booking
                         </Link>
                       </button>
