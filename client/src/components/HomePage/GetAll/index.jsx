@@ -12,6 +12,7 @@ const GetAll = () => {
     try {
       const res = await axios.get("http://localhost:8000/api/hotels?limit=6");
       setData(res.data);
+      console.log(res.data);
       setIsLoading(false);
     } catch (error) {
       console.log(error.message);

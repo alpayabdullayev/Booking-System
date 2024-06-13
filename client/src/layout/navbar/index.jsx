@@ -95,10 +95,8 @@ const Navbar = () => {
               <NavigationMenuList className="flex gap-7">
                 <NavigationMenuItem>
                   <NavLink
-                    activeclassname={"active"}
+                    activeClassName={"active"}
                     to={"/"}
-                    legacyBehavior
-                    passHref
                   >
                     <NavigationMenuLink className="text-black font-bold">
                       {t("Home")}
